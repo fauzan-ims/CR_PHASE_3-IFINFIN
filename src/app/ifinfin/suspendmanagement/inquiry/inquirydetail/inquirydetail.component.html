@@ -1,0 +1,236 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Inquiry Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #inquirydetailForm="ngForm" (ngSubmit)="onFormSubmit(inquirydetailForm.value, inquirydetailForm.valid)">
+
+            <!--#region button back-->
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Suspend No</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code" readonly>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Branch </label>
+                  <input type="text" class="form-control" [ngModel]="model.branch_name" maxlength="250"
+                    name="p_branch_name" readonly>
+                </div>
+              </div>
+              <!-- <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button disabled class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                        (click)="btnLookupBranch()" data-toggle="modal" data-target="#lookupModalBranch" href="#"><i
+                          class="fa fa-search-plus"></i></button>
+                       {{model.branch_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_code" name="p_branch_code">
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_name" name="p_branch_name">
+                    </span>
+                  </div>
+                </div>
+              </div> -->
+              <!--#endregion Branch Code-->
+
+              <!--#region currency-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Currency </label>
+                  <input type="text" class="form-control col-md-4" maxlength="3" [ngModel]="model.suspend_currency_code"
+                    name="p_suspend_currency_code" readonly>
+                </div>
+              </div>
+              <!--#endregion currency-->
+
+              <!--#region suspend_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Remark</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.suspend_remarks" maxlength="4000"
+                    name="p_suspend_remarks" readonly></textarea>
+                </div>
+              </div>
+              <!--#endregion suspend_remarks-->
+            </div>
+            <!--#endregion  row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region suspend_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Suspend Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.suspend_amount | number : '1.2-2'" name="p_suspend_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion suspend_amount-->
+
+              <!--#region used_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Used Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.used_amount | number : '1.2-2'" name="p_used_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion used_amount-->
+
+              <!--#region remaining_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Remaining Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.remaining_amount | number : '1.2-2'" name="p_remaining_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion remaining_amount-->
+            </div>
+            <!--#endregion  row-->
+
+            <!--#region  row-->
+            <div class="row">
+              <!--#region suspend_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Date</label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.suspend_date" name="p_suspend_date" [options]="myDatePickerOptions"
+                    #p_suspend_date="ngModel" #suspend_date="angular-mydatepicker" autocomplete="off" readonly />
+                </div>
+              </div>
+              <!--#endregion suspend_date-->
+
+              <!--#region reff_no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Reff No</label>
+                  <input type="text" class="form-control" [ngModel]="model.reff_no" maxlength="50" name="p_reff_no"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion reff_no-->
+
+              <!--#region reff_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Reff Name</label>
+                  <input type="text" class="form-control" [ngModel]="model.reff_name" maxlength="250" name="p_reff_name"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion reff_name-->
+            </div>
+            <!--#endregion  row-->
+
+            <span layout="row horizontal-divider">
+              <hr flex />
+            </span>
+            <br>
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region transaction_code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="transaction_code" class="control-label">Transaction No</label>
+                  <input type="text" [disabled]="param == null" class="form-control" maxlength="50"
+                    [ngModel]="model.transaction_code" readonly name="p_transaction_code">
+                </div>
+              </div>
+              <!--#endregion transaction_code-->
+
+              <!--#region transaction_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="transaction_name" class="control-label">Transaction Name</label>
+                  <input type="text" [disabled]="param == null" class="form-control" maxlength="250"
+                    [ngModel]="model.transaction_name" readonly name="p_transaction_name">
+                </div>
+              </div>
+              <!--#endregion transaction_name-->
+
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div *ngIf="param != null" class="row">
+          <div class="col-md-12">
+            <div class="card-header">
+              <h5 class="card-title">Inquiry Detail List</h5>
+            </div>
+            <div class="card-body">
+              <!--#region list view-->
+              <table id="datatablesInquiryDetail" datatable [dtOptions]="dtOptions"
+                class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th class="disabled-sorting">No</th>
+                    <th style="display: none;"></th>
+                    <th>Transaction Date</th>
+                    <th>Value Date</th>
+                    <th>Source</th>
+                    <th>Agreement No</th>
+                    <th>Invoice No</th>
+                    <th>Orig Amount</th>
+                    <th>Currency</th>
+                    <th>Base Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of listinquirydetail;let i=index ">
+                    <td style="text-align: center;">{{listinquirydetail.numberIndex+i+1}}</td>
+                    <td style="display: none;"></td>
+                    <td style="width: 10%;text-align: center;">{{row.transaction_date}}</td>
+                    <td style="width: 10%;text-align: center;">{{row.value_date}}</td>
+                    <td style="width: 10%;">{{row.source_reff_code}} <br> {{row.source_reff_name}}</td>
+                    <td style="width: 15%;">{{row.agreement_external_no}} <br> {{row.client_name}}</td>
+                    <td style="width: 15%;">{{row.invoice_external_no}} - {{row.invoice_type}} <br> {{row.invoice_name}}
+                    </td>
+                    <td style="width: 15%;text-align: right;">{{row.orig_amount | number : '1.2-2'}}</td>
+                    <td style="width: 10%;text-align: right;">{{row.orig_currency_code}} <br>
+                      {{row.exch_rate | number : '1.6-6'}}</td>
+                    <td style="width: 15%;text-align: right;">{{row.base_amount | number : '1.2-2'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--#endregion list view-->
+            </div>
+            <div class="card-footer ">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

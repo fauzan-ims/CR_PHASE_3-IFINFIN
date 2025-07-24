@@ -1,0 +1,81 @@
+<router-outlet></router-outlet>
+
+
+<div id="hideMainPanel" class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header">
+          <h5 class="card-title">GL Link List</h5>
+        </div>
+        <div class="card-body">
+          <!--#region button add, Delete-->
+          <div class="toolbar">
+            <button class="btn btn-info btn-round" (click)="btnAdd()" data-role="R00002970000000C">
+              Add
+            </button>
+            <button class="btn btn-danger btn-round" (click)="btnDeleteAll()" data-role="R00002970000298D">
+              Delete
+            </button>
+          </div>
+          <!--#endregion button add, Delete-->
+
+          <!--#region list view-->
+          <table id="datatableGlLinkList" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="disabled-sorting">No</th>
+                <th class="disabled-sorting">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" id="checkalltable" [(ngModel)]="selectedAllTable"
+                        (change)="selectAllTable();" />
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Bank</th>
+                <th>Active</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let row of listgllink;let i=index ">
+                <td style="text-align: center;">{{listgllink.numberIndex+i+1}}</td>
+                <td class="disabled-sorting">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [(ngModel)]="row.selected"
+                        (change)="checkIfAllTableSelected($event, row.code);" value="{{row.code}}" name="p_code">
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </td>
+                <td style="width: 30%;text-align: center;">{{row.code}}</td>
+                <td style="width: 40%;">{{row.gl_link_name}}</td>
+                <td style=" width: 15%;text-align: center;">{{row.is_bank}}</td>
+                <td style=" width: 15%;text-align: center;">{{row.is_active}}</td>
+                <td class="text-center">
+                  <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit" (click)="btnEdit(row.code)"><i
+                      class="fa fa-edit"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

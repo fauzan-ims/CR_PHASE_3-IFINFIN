@@ -1,0 +1,341 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h4 class="card-title">Todo Employee Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #systodoemployeeForm="ngForm"
+            (ngSubmit)="onFormSubmit(systodoemployeeForm.value, systodoemployeeForm.valid)">
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00019550001956C"
+              [hidden]='this.param != null'>Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <input type="text" name="p_id" [ngModel]="this.params" #id="ngModel" hidden>
+
+              <!--#region employee lookup-->
+
+              <div class="col-md-4" [hidden]='this.param != null'>
+                <label class="labelmodule">Employee *</label>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <button [disabled]="this.param != null"
+                      class="btn btn-icon btn-outline-default btn-round btn-md btn-lookup-margin" type="button"
+                      (click)="btnLookupemployee()" data-target="#lookupModalemployee" data-toggle="modal" href="#">
+                      <i class="fa fa-search-plus"></i></button> {{model.employee_name}}
+                    <input type="text" name="p_employee_name" [ngModel]="model.employee_name" #employee_name="ngModel"
+                      hidden>
+                    <input type="text" name="p_employee_code" [ngModel]="model.employee_code" #employee_code="ngModel"
+                      hidden>
+                  </div>
+                  <small
+                    *ngIf="(employee_code.errors?.required && employee_code.touched) || (employee_code.errors?.required && systodoemployeeForm.submitted)"
+                    class="text-danger">
+                    Employee is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion employee lookup-->
+
+              <!--#region employee code-->
+              <div class="col-md-4" [hidden]='this.param ==null'>
+                <div class="form-group">
+                  <label for="employee_code" class="control-label">Employee Code</label>
+                  <input type="text" class="form-control" [ngModel]="model.employee_code" name="p_employee_code"
+                    required #employee_code="ngModel" readonly>
+                  <small
+                    *ngIf="employee_code.errors?.required && employee_code.touched || (employee_code.errors?.required && systodoemployeeForm.submitted) "
+                    class="text-danger">
+                    Employee Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion employee code-->
+
+              <!--#region employee name -->
+              <div class="col-md-4" [hidden]='this.param ==null'>
+                <div class="form-group">
+                  <label for="employee_name" class="control-label">Employee Name </label>
+                  <input type="text" class="form-control" [ngModel]="model.employee_name" name="p_employee_name"
+                    required #employee_name="ngModel" readonly>
+                  <small
+                    *ngIf="employee_name.errors?.required && employee_name.touched || (employee_name.errors?.required && systodoemployeeForm.submitted) "
+                    class="text-danger">
+                    Employee Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion employee name-->
+
+              <!--#region todo lookup-->
+              <div class="col-md-4">
+                <label>Todo *</label>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <button
+                      class="btn btn-icon btn-outline-default btn-round btn-md btn-lookup-margin" type="button"
+                      (click)="btnLookuptodo()" data-target="#lookupModaltodo" data-toggle="modal" href="#">
+                      <i class="fa fa-search-plus"></i></button> {{model.todo_name}}
+                    <input type="text" maxlength="50" name="p_todo_code" [ngModel]="model.todo_code" hidden required
+                      #todo_code="ngModel">
+                    <input type="text" maxlength="50" name="p_todo_name" [ngModel]="model.todo_name" hidden required
+                      #p_todo_name="ngModel">
+                  </div>
+                  <small
+                    *ngIf="todo_code.errors?.required && todo_code.touched || (todo_code.errors?.required && systodoemployeeForm.submitted)"
+                    class="text-danger">
+                    Todo is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion todo lookup-->
+            </div>
+            <!--#endregion row-->
+
+          </form>
+          <!--#endregion list view-->
+        </div>
+        <!--#region list view-->
+        <div *ngIf="param != null" class="row">
+          <span layout="row horizontal-divider">
+            <hr flex />
+          </span>
+          <div class="col-md-12">
+            <div class="card-header">
+              <h4 class="card-title">Todo List</h4>
+            </div>
+            <div class="card-body">
+              <div class="toolbar">
+                <!--#region button submit dan back-->
+                <button class="btn btn-info btn-round" type="button" (click)="btnLookuptodoemployee()"
+                  data-target="#lookupModaltodoEm" data-toggle="modal" href="#" data-role="R00019550001956C">
+                  Add </button>
+
+                <button type="button" class="btn btn-danger btn-round" data-role="R00019550001956D"
+                  (click)="btnDelete()">Delete</button>
+                <!--#endregion button submit dan back-->
+              </div>
+
+              <!--#region list view-->
+              <table id="datatablelisttodoemployeedetail" datatable [dtOptions]="dtOptions"
+                class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th class="disabled-sorting">No</th>
+                    <th class="disabled-sorting">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" id="checkall" [(ngModel)]="selectedAll"
+                            (change)="selectAllTable();" />
+                          <span class="form-check-sign"></span>
+                        </label>
+                      </div>
+                    </th>
+                    <th hidden>Id </th>
+                    <th>Todo Name</th>
+                    <th>Priority</th>
+                    <!-- <th style="text-align: center;">Action</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of listsystodoemployeedetail; let i = index">
+                    <td style="text-align: center;">{{listsystodoemployeedetail.numberIndex+i+1}}</td>
+                    <td>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" [(ngModel)]="row.selected"
+                            (change)="checkIfAllTableSelected($event, row.id);">
+                          <span class="form-check-sign"></span>
+                        </label>
+                      </div>
+                    </td>
+                    <td hidden> {{row.id}}</td>
+                    <td class="if-no-edit-btn" style="width: 80%; text-align: left;">{{row.todo_name}}</td>
+                    <td style="width: 20%; text-align: center;">
+                      <select class='form-control  col-md-6' name="p_priority" [ngModel]="row.priority"
+                        (change)="changePriority(row.id, $event)">
+                        <option value='LOW'>LOW</option>
+                        <option value='MEDIUM'>MEDIUM</option>
+                        <option value='HIGH'>HIGH</option>
+                      </select>
+                    </td>
+                    <!-- <td style="text-align: center;">
+                        <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit"
+                          (click)="btnEdit(row.id)"><i class="fa fa-edit"></i></a>
+                      </td> -->
+                  </tr>
+                </tbody>
+              </table>
+              <!--#endregion list view-->
+            </div>
+          </div>
+        </div>
+        <!--#endregion list view-->
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region modal lookup employee-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalemployee"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupemployee" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupemployee;let i=index ">
+                  <td class="if-no-edit-btn" style="display: none;"></td>
+                  <td class="if-no-edit-btn" style="text-align: center;">{{lookupemployee.numberIndex+i+1}}</td>
+                  <td style="width:20%; text-align: center;">{{ row.code }}</td>
+                  <td style="width:80%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowemployee(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion modal lookup employee-->
+
+<!--#region modal lookup todo-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModaltodo" style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookuptodo" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookuptodo;let i=index ">
+                  <td class="if-no-edit-btn" style="display: none;"></td>
+                  <td class="if-no-edit-btn" style="text-align: center;">{{lookuptodo.numberIndex+i+1}}</td>
+                  <td style="width:20%; text-align: center;">{{ row.code }}</td>
+                  <td style="width:80%;">{{ row.todo_name}}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowtodo(row.code, row.todo_name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion modal lookup todo-->
+
+<!--#region lookup todo add-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModaltodoEm"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="card-body col-md-12">
+          <div class="col-md-12">
+            <!--#region button add-->
+            <button class="btn btn-info btn-round" (click)="btnSelectAllLookup()" role="P001" id="button">
+              Add
+            </button>
+            <!--#endregion button add--->
+            <table id="datatablelookuptodoem" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th class="disabled-sorting">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="checkallLookup"
+                          [(ngModel)]="selectedAllLookup" (change)="selectAllLookup();" />
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </th>
+                  <th>Code</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookuptodoem;let i=index ">
+                  <td class="if-no-edit-btn" style="text-align: center;">{{lookuptodoem.numberIndex+i+1}}</td>
+                  <td class="disabled-sorting checkbox-fix-padding if-no-edit-btn">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="row.selectedLookup"
+                          (change)="checkIfAllLookup($event, row.code, row.todo_name);">
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </td>
+                  <td style="width: 20%;text-align: center;">{{ row.code }}</td>
+                  <td style="width: 80%;" class="if-no-edit-btn">{{ row.todo_name }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup todo add-->

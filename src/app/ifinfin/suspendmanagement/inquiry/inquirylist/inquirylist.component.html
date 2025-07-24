@@ -1,0 +1,165 @@
+<router-outlet></router-outlet>
+
+
+<div id="hideMainPanel" class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header">
+          <h5 class="card-title">Inquiry List</h5>
+        </div>
+        <div class="card-body">
+          <!--#endregion row-->
+          <div class="row">
+            <!--#region lookup Branch Code -->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label labelmodule" label for="branch_code" (click)="btnClearBranch()"
+                style="cursor: pointer;" title="Clear">Branch</label>
+                <div class="col-md-12 buttons btn-lookup-margin">
+                  <span>
+                    <button class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                      (click)="btnLookupBranchcode()" data-toggle="modal" data-target="#lookupModalBranchcode"
+                      href="#"><i class="fa fa-search-plus"></i></button>
+                    {{branch_name}}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!--#endregion lookup Branch code -->
+
+            <!--#region remain-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Remain</label>
+                <select class='form-control col-md-4' [ngModel]="this.tampStatus" (change)="isRemain($event)">
+                  <option value='YES'>Yes</option>
+                  <option value='NO'>No</option>
+                </select>
+              </div>
+            </div>
+            <!--#endregion remain-->
+
+            <div class="col-md-4">
+              <div class="row">
+                <!--#region from date-->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>From Date</label>
+                    <input class="form-control" placeholder="dd/mm/yyyy" angular-mydatepicker
+                      [ngModel]="model.from_date" name="p_from_date" [options]="myDatePickerOptions"
+                      (click)="from_date.toggleCalendar()" #p_from_date="ngModel" #from_date="angular-mydatepicker"
+                      autocomplete="off" (dateChanged)="FromDate($event)" />
+                  </div>
+                </div>
+                <!--#endregion from date-->
+
+                <!--#region to date-->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>To Date</label>
+                    <input class="form-control" placeholder="dd/mm/yyyy" angular-mydatepicker [ngModel]="model.to_date"
+                      name="p_to_date" [options]="myDatePickerOptions" (click)="to_date.toggleCalendar()"
+                      #p_transfer_value_date="ngModel" #to_date="angular-mydatepicker" autocomplete="off"
+                      (dateChanged)="ToDate($event)" />
+                  </div>
+                </div>
+                <!--#endregion to date-->
+              </div>
+            </div>
+          </div>
+          <!--#endregion row-->
+
+          <!--#region list view-->
+          <table id="datatableInquiryList" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="disabled-sorting">No</th>
+                <th style="display: none;"></th>
+                <th>Suspend No</th>
+                <th>Branch </th>
+                <th>Date </th>
+                <th>Currency </th>
+                <th>Source </th>
+                <th>Remark</th>
+                <th>Suspend Amount</th>
+                <th>Remaining Amount</th>
+                <th style="text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of listinquiry;let i=index ">
+                <td style="text-align: center;">{{listinquiry.numberIndex+i+1}}</td>
+                <td style="display: none;"></td>
+                <td style="width: 15%;" class="text-center">{{row.code}}</td>
+                <td style="width: 15%;">{{row.branch_name}}</td>
+                <td style="width: 10%;text-align: center;">{{row.suspend_date}}</td>
+                <td style="width: 10%;text-align: center;">{{row.suspend_currency_code}}</td>
+                <td style="width: 15%;">{{row.reff_no}} <br> {{row.reff_name}}</td>
+                <td style="width: 15%;">{{row.suspend_remarks}}</td>
+                <td style="width: 10%;text-align: right;">{{row.suspend_amount | number : '1.2-2'}}</td>
+                <td style="width: 10%;text-align: right;">{{row.remaining_amount | number : '1.2-2'}}</td>
+                <td style="text-align: center;">
+                  <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit" (click)="btnEdit(row.code)"><i
+                      class="fa fa-edit"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region modal lookup Branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalBranchcode"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupBranchcode" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbranchcode;let i=index ">
+                  <td style="text-align: center;">{{lookupbranchcode.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBranchcode(row.code,row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion modal lookup Branch-->

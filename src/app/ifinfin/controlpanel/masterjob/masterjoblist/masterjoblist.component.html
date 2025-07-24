@@ -1,0 +1,94 @@
+<router-outlet></router-outlet>
+
+
+<div id="hideMainPanel" class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--#region watermark-->
+                <div class="watermark" hidden>
+                    <h6>{{this.companyName}}</h6>
+                    <h6>{{this.userName}}</h6>
+                    <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+                </div>
+                <!--#endregion watermark-->
+                <div class="card-header">
+                    <h5 class="card-title">Job Tasklist List</h5>
+                </div>
+                <div class="card-body">
+                    <!--#region button add-->
+                    <div class="toolbar">
+                        <button class="btn btn-info btn-round" (click)="btnAdd()" data-role="R00022980000002C">
+                            Add
+                        </button>
+                    </div>
+                    <!--#endregion button add-->
+                    <!--#region row-->
+                    <div class="row">
+                        <!--#region type-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select class='form-control  col-md-4' name="p_type" [(ngModel)]="this.tampType"
+                                    (change)="PageType($event)">
+                                    <option value='ALL'>ALL</option>
+                                    <option value='PULL'>PULL</option>
+                                    <option value='IN'>IN</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--#endregion type-->
+
+                        <!--#region Active-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Active</label>
+                                <select class='form-control  col-md-4' name="p_is_active" [(ngModel)]="this.tampActive"
+                                    (change)="PageActive($event)">
+                                    <option value='1'>ACTIVE</option>
+                                    <option value='0'>INACTIVE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--#endregion Active-->
+                    </div>
+                    <!--#endregion row-->
+
+                    <!--#region list view-->
+                    <table id="datatableMasterJobList" datatable [dtOptions]="dtOptions"
+                        class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="disabled-sorting">No</th>
+                                <th style="display: none;"></th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>SP Name</th>
+                                <th>Order No</th>
+                                <th>Active</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of listjobtasklist;let i=index">
+                                <td style="text-align: center;">{{listjobtasklist.numberIndex+i+1}}</td>
+                                <td style="display: none;"></td>
+                                <td style="text-align: center; width: 10%;">{{row.type}}</td>
+                                <td class="if-no-edit-btn" style="text-align: left; width: 50%;">{{row.description}}
+                                </td>
+                                <td style="text-align: left; width: 25%;">{{row.sp_name}}</td>
+                                <td style="text-align: center; width: 5%;">{{row.order_no}}</td>
+                                <td style="text-align: center; width: 10%;">{{row.is_active}}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit"
+                                        (click)="btnEdit(row.code)"><i class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--#endregion list view-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

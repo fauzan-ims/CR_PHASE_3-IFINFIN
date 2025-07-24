@@ -1,0 +1,189 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h4 class="card-title">Release Info</h4>
+        </div>
+        <div class="card-body ">
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Release No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button disabled class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" data-toggle="modal"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_name}}
+                    </span>
+                    <input type="text" [ngModel]="model.branch_name" maxlength="250" name="p_branch_name" hidden
+                      required #branch_name="ngModel">
+                    <input type="text" [ngModel]="model.branch_code" maxlength="50" name="p_branch_code" hidden>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region  Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input readonly type="text" class="form-control" [ngModel]="model.release_status"
+                    name="p_release_status">
+                </div>
+              </div>
+              <!--#endregion  Status-->
+
+              <!--#region suspend_code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Suspend</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button disabled class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" data-toggle="modal"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.suspend_code}}
+                      <input type="hidden" class="form-control" [ngModel]="model.suspend_code" name="p_suspend_code"
+                        required #suspend_code="ngModel">
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion suspend_code-->
+
+              <!--#region suspend_currency_code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Currency</label>
+                  <input type="text" class="form-control col-md-4" maxlength="3" [ngModel]="model.suspend_currency_code"
+                    name="p_suspend_currency_code" readonly>
+                </div>
+              </div>
+              <!--#endregion suspend_currency_code-->
+
+              <!--#region suspend_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Suspend Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.suspend_amount | number : '1.2-2'" name="p_suspend_amount" readonly maxlength="24"
+                    amount="suspend_amount">
+                </div>
+              </div>
+              <!--#endregion suspend_amount-->
+
+              <!--#region release_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="release_date" class="control-label">Date</label>
+                  <input [ngStyle]="getStyles(true)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.release_date" name="p_release_date"
+                    [options]="myDatePickerOptions" readonly
+                    #p_release_date="ngModel" #release_date="angular-mydatepicker" autocomplete="off"/>
+                </div>
+              </div>
+              <!--#endregion release_date -->
+
+              <!--#region release_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="release_amount" class="control-label">Release Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.release_amount | number : '1.2-2'" name="p_release_amount" readonly
+                    #release_amount="ngModel" maxlength="24" amount="release_amount">
+                </div>
+              </div>
+              <!--#endregion release_amount-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region  row-->
+            <div class="row">
+              <!--#region to bank name -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Bank Name</label>
+                  <div class="col-md-12 buttons">
+                    <span>
+                      <button disabled class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" data-toggle="modal" data-target="#lookupModalSysBank"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.release_bank_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.release_bank_name"
+                        name="p_release_bank_name" required #release_bank_name="ngModel">
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion to bank name -->
+
+              <!--#region release_bank_account_no -->
+              <div class="col-md-4">
+                <div class="form-group"
+                  [class.has-error]="release_bank_account_no.invalid && release_bank_account_no.touched">
+                  <label for="release_bank_account_no" class="control-label">Bank Account No</label>
+                  <input type="text" class="form-control" maxlength="50" [ngModel]="model.release_bank_account_no"
+                    name="p_release_bank_account_no" readonly #release_bank_account_no="ngModel">
+                </div>
+              </div>
+              <!--#endregion release_bank_account_no-->
+
+              <!--#region release_bank_account_name  -->
+              <div class="col-md-4">
+                <div class="form-group"
+                  [class.has-error]="release_bank_account_name.invalid && release_bank_account_name.touched">
+                  <label for="release_bank_account_name" class="control-label">Bank Account Name</label>
+                  <input type="text" class="form-control" maxlength="250" [ngModel]="model.release_bank_account_name"
+                    name="p_release_bank_account_name" readonly
+                    #release_bank_account_name="ngModel">
+                </div>
+              </div>
+              <!--#endregion release_bank_account_name -->
+            </div>
+            <!--#endregion  row-->
+
+            <!--#region  row-->
+            <div class="row">
+              <!--#region release_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="release_remarks" class="control-label">Remark</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.release_remarks" maxlength="4000"
+                    name="p_release_remarks" #release_remarks="ngModel" readonly></textarea>
+                </div>
+              </div>
+              <!--#endregion release_remarks-->
+            </div>
+            <!--#endregion row-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

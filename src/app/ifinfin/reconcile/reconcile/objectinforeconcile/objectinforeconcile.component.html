@@ -1,0 +1,245 @@
+<div class="main-content">
+    <!-- spinner region -->
+    <div class="panel-container-spinner" *ngIf="showSpinner">
+        <app-spinner class="spinner-container"></app-spinner>
+    </div>
+    <!-- end spinner region -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ">
+                <!--#region watermark-->
+                <div class="watermark" hidden>
+                    <h6>{{this.companyName}}</h6>
+                    <h6>{{this.userName}}</h6>
+                    <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+                </div>
+                <!--#endregion watermark-->
+                <div class="card-header ">
+                    <h5 class="card-title">Reconcile Info</h5>
+                </div>
+                <div class="card-body ">
+                    <!--#region row-->
+                    <div class="row">
+                        <!--#region code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Reconcile No </label>
+                                <input type="text" class="form-control" [ngModel]="model.code" name="p_code" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion code-->
+
+                        <!--#region branch_name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" class="form-control" [ngModel]="model.branch_name"
+                                    name="p_branch_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion branch_name-->
+
+                        <!--#region reconcile_status-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" class="form-control" [ngModel]="model.reconcile_status"
+                                    name="p_reconcile_status" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion reconcile_status-->
+
+                        <!--#region reconcile_date-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.reconcile_date" name="p_reconcile_date"
+                                    [options]="myDatePickerOptions" #p_reconcile_date="ngModel"
+                                    #reconcile_date="angular-mydatepicker" autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion reconcile_date-->
+
+                        <!--#region  reconcile_from_value_date -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reconcile_from_value_date" class="control-label">From Date</label>
+                                <input [ngStyle]="getStyles(true)" class="form-control col-md-6"
+                                    placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.reconcile_from_value_date" name="p_reconcile_from_value_date"
+                                    [options]="myDatePickerOptions" (click)="reconcile_from_value_date.toggleCalendar()"
+                                    #p_reconcile_from_value_date="ngModel"
+                                    #reconcile_from_value_date="angular-mydatepicker" autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion reconcile_from_value_date -->
+
+                        <!--#region  reconcile_to_value_date -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reconcile_to_value_date" class="control-label">To Date</label>
+                                <input [ngStyle]="getStyles(true)" class="form-control col-md-6"
+                                    placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.reconcile_to_value_date" name="p_reconcile_to_value_date"
+                                    [options]="myDatePickerOptions" (click)="reconcile_to_value_date.toggleCalendar()"
+                                    #p_reconcile_to_value_date="ngModel" #reconcile_to_value_date="angular-mydatepicker"
+                                    autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion reversal_date -->
+
+                        <!--#region branch_bank_name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" class="form-control" [ngModel]="model.branch_bank_name"
+                                    name="p_branch_bank_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion branch_bank_name-->
+
+                        <!--#region system_amount-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>System Amount</label>
+                                <input readonly type="text" style="text-align: right;" class="form-control col-md-6"
+                                    [ngModel]="model.system_amount | number : '1.2-2'" name="p_system_amount"
+                                    amount="system_amount=">
+                            </div>
+                        </div>
+                        <!--#endregion system_amount-->
+
+                        <!--#region upload_amount-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Upload Amount</label>
+                                <input readonly type="text" style="text-align: right;" class="form-control col-md-6"
+                                    [ngModel]="model.upload_amount | number : '1.2-2'" name="p_upload_amount"
+                                    amount="upload_amount">
+                            </div>
+                        </div>
+                        <!--#endregion upload_amount-->
+
+                        <!--#region  Remarks-->
+                        <div class="col-md-4">
+                            <div class="form-group"
+                                [class.has-error]="reconcile_remarks.invalid && reconcile_remarks.touched">
+                                <label for="reconcile_remarks" class="control-label">Remark</label>
+                                <textarea type="text" class="form-control" [ngModel]="model.reconcile_remarks"
+                                    name="p_reconcile_remarks" required #reconcile_remarks="ngModel"
+                                    readonly></textarea>
+                            </div>
+                        </div>
+                        <!--#endregion  Remarks-->
+                    </div>
+                    <!--#endregion  row-->
+                    <div *ngIf="param != null">
+                        <span layout="row horizontal-divider">
+                            <hr flex />
+                        </span>
+                        <div class="row">
+                            <!--#region reconcile transaction is_system 1-->
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <!--#region list view-->
+                                    <table id="datatablesystem" datatable [dtOptions]="dtOptions"
+                                        class="table table-striped table-bordered row-border hover" cellspacing="0"
+                                        width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="display: none;"></th>
+                                                <th>Reconcile</th>
+                                                <th>Value Date</th>
+                                                <th>Source</th>
+                                                <th>Transaction</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let row of listreconciledetail">
+                                                <td style="display: none;"></td>
+                                                <td class="disabled-sorting">
+                                                    <div class="form-check" style="text-align: center;">
+                                                        <label class="form-check-label">
+                                                            <input type="hidden" value="{{row.id}}" name="p_id1">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                [checked]="row.is_reconcile" name="p_is_reconcile1"
+                                                                disabled>
+                                                            <span class="form-check-sign"></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: center;width: 20;">{{row.transaction_value_date}}
+                                                </td>
+                                                <td style="width: 20%;">{{row.transaction_source}} </td>
+                                                <td style="width: 40%;" class="if-no-edit-btn">{{row.transaction_no}}
+                                                    <br>
+                                                    {{row.transaction_reff_no}}
+                                                </td>
+                                                <td style="text-align: right;width: 20%;">{{row.transaction_amount |
+                                                    number : '1.2-2'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!--#endregion list view-->
+                                </div>
+
+                            </div>
+                            <!--#endregion reconcile transaction is_system 1-->
+
+                            <!--#region reconcile transaction is_system 0-->
+                            <div class="col-md-6">
+
+                                <div class="card-body">
+                                    <!--#region list view-->
+                                    <table id="datatableupload" datatable [dtOptions]="dtOptionss"
+                                        class="table table-striped table-bordered row-border hover" cellspacing="0"
+                                        width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="display: none;"></th>
+                                                <th>Reconcile</th>
+                                                <th style="width: 30%;">Value Date</th>
+                                                <th style="width: 40%;">Transaction</th>
+                                                <th style="width: 20%;">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let row of listreconciledetails">
+                                                <td style="display: none;"></td>
+                                                <td class="disabled-sorting">
+                                                    <div class="form-check" style="text-align: center;">
+                                                        <label class="form-check-label">
+                                                            <input type="hidden" value="{{row.id}}" name="p_id2">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                [checked]="row.is_reconcile" name="p_is_reconcile2"
+                                                                disabled>
+                                                            <span class="form-check-sign"></span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: center;width: 20%;">
+                                                    {{row.transaction_value_date}} </td>
+                                                <td class="if-no-edit-btn" style="text-align: left;width: 60%;">
+                                                    {{row.transaction_no}} <br>
+                                                    {{row.transaction_reff_no}}</td>
+                                                <td style="text-align: right;width: 20%;">{{row.transaction_amount |
+                                                    number : '1.2-2'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!--#endregion list view-->
+                                </div>
+
+                            </div>
+                        </div>
+                        <!--#endregion reconcile transaction is_system 0-->
+                    </div>
+                </div>
+                <!-- <div class="card-footer "> -->
+                <!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>

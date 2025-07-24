@@ -1,0 +1,619 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Payment Voucher Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #pvmanualdetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(pvmanualdetailForm.value, pvmanualdetailForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" [hidden]="isButton"
+              data-role="R00003140002315C">Save</button>
+            <button type="button" class="btn btn-success btn-round" [hidden]="isButton || param == null"
+              data-role="R00003140000315O" (click)="btnPaid()">Paid</button>
+            <!--(+) Ari 2023-09-27 ket : hidden reversal-->
+            <!-- <button type="button" class="btn btn-warning btn-round" style="width: fit-content;"
+              data-role="R00003140002315O" [hidden]="model.payment_status !== 'PAID' || param == null"
+              (click)="btnReversalRequest()">Reversal
+              Request</button> -->
+            <button type="button" class="btn btn-warning btn-round" [hidden]="isButton || param == null"
+              data-role="R00003140000315R" (click)="btnCancel()">Cancel</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+
+            <button type="button" style='float: right;' class="btn btn-info btn-round" [hidden]="model.code == null"
+              (click)="btnPrint(model.code,model.rpt_code,model.report_name)" data-role="R00003140001315P">
+              Print
+            </button>
+
+            <!--(+) Ari 2023-09-07 add button view approval for reversal-->
+            <button [hidden]="model.payment_status !== 'ON REVERSE' && model.payment_status !== 'REVERSE'" type="button"
+              style='float: right;' class="btn btn-success btn-round custom-button-width" (click)="btnViewApproval()"
+              data-toggle="modal" data-target="#lookupModalApproval" href="#">
+              View Approval
+            </button>
+            <!--(+) Ari 2023-09-07-->
+
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Payment Voucher No</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Payment Voucher No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupSysBranch()" data-toggle="modal"
+                        data-target="#lookupModalSysBranch" href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_name}}
+                    </span>
+                    <input type="text" [ngModel]="model.branch_name" maxlength="250" name="p_branch_name" hidden
+                      required #branch_name="ngModel">
+                    <input type="text" [ngModel]="model.branch_code" maxlength="50" name="p_branch_code" hidden>
+                  </div>
+                  <small [hidden]="branch_name.valid || (branch_name.pristine && !pvmanualdetailForm.submitted)"
+                    class="text-danger">
+                    Branch is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region  Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.payment_status" maxlength="10"
+                    name="p_payment_status" readonly>
+                </div>
+              </div>
+              <!--#endregion  Status-->
+
+              <!--#region  payment_transaction_date -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_transaction_date" class="control-label">Entry Date </label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.payment_transaction_date" name="p_payment_transaction_date"
+                    [options]="myDatePickerOptions" #p_payment_transaction_date="ngModel"
+                    #payment_transaction_date="angular-mydatepicker" autocomplete="off" readonly />
+                </div>
+              </div>
+              <!--#endregion payment_transaction_date -->
+
+              <!--#region radio button type-->
+              <div class="col-md-4">
+                <label>Type *</label>
+                <div class="form-group col-md-6" style="margin-left: 15px;">
+                  <div class="row">
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_payment_type" value="TRANSFER"
+                          [disabled]="isButton" [(ngModel)]="model.payment_type" (change)="paymentType($event)">Transfer
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                    <!-- <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_payment_type" value="PDC"
+                          [disabled]="isButton" [(ngModel)]="model.payment_type" (change)="paymentType($event)">PDC
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div> -->
+                    <!-- <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_payment_type" value="CASH"
+                          [disabled]="isButton" [(ngModel)]="model.payment_type" (change)="paymentType($event)">CASH
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <!--#endregion radio button type-->
+
+              <!--#region pdc code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label [hidden]="model.payment_type !=='PDC'" for="pdc_no" class="control-label">PDC No *</label>
+                  <label [hidden]="model.payment_type ==='PDC'" for="pdc_no" class="control-label">PDC No </label>
+                  <input type="text" class="form-control" [ngModel]="model.pdc_no" maxlength="50" name="p_pdc_no"
+                    [readonly]="model.payment_type !=='PDC' || isButton" [required]="model.payment_type ==='PDC'"
+                    #pdc_no="ngModel">
+                  <small
+                    *ngIf="(pdc_no.errors?.required && pdc_no.touched) || (pdc_no.errors?.required && pvmanualdetailForm.submitted)"
+                    class="text-danger">
+                    PDC No is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion pdc code-->
+
+              <!--#region  payment_value_date -->
+              <div class="col-md-4">
+                <div class="form-group"
+                  [class.has-error]="p_payment_value_date.invalid && p_payment_value_date.touched">
+                  <label for="payment_value_date" class="control-label">Value Date *</label>
+                  <input [ngStyle]="getStyles(isButton)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.payment_value_date" name="p_payment_value_date"
+                    [options]="myDatePickerOptions" (click)="payment_value_date.toggleCalendar()" required
+                    #p_payment_value_date="ngModel" #payment_value_date="angular-mydatepicker" autocomplete="off"
+                    [readonly]="isButton" (dateChanged)="valueDate($event)" />
+                  <small
+                    *ngIf="(p_payment_value_date.errors?.required && p_payment_value_date.touched) || (p_payment_value_date.errors?.required && pvmanualdetailForm.submitted)"
+                    class="text-danger">
+                    Value Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion payment_value_date -->
+
+              <!--#region  Bank-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Bank *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isButton" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupBank()" data-toggle="modal" data-target="#lookupModalBank"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_bank_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_bank_code"
+                        name="p_branch_bank_code">
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_bank_name"
+                        name="p_branch_bank_name" required #branch_bank_name="ngModel">
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_gl_link_code"
+                        name="p_branch_gl_link_code">
+                    </span>
+                  </div>
+                  <small
+                    [hidden]="branch_bank_name.valid || (branch_bank_name.pristine && !pvmanualdetailForm.submitted)"
+                    class="text-danger">
+                    Bank is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion  Bank-->
+
+              <!--#region currency-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Currency</label>
+                  <input readonly type="text" class="form-control col-md-4" [ngModel]="model.payment_orig_currency_code"
+                    name="p_payment_orig_currency_code">
+                </div>
+              </div>
+              <!--#endregion currency-->
+
+              <!--#region payment_orig_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_orig_amount" class="control-label">Orig Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.payment_orig_amount | number : '1.2-2'" name="p_payment_orig_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion payment_orig_amount-->
+
+              <!--#region payment_exch_rate-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_exch_rate" class="control-label">Exch Rate *</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.payment_exch_rate | number : '1.6-6'" name="p_payment_exch_rate" required
+                    #payment_exch_rate="ngModel" maxlength="23" rate="payment_exch_rate" (change)="exchRate($event)"
+                    [readonly]="isButton || isCurrency">
+                  <small
+                    *ngIf="(payment_exch_rate.errors?.required && payment_exch_rate.touched) || (payment_exch_rate.errors?.required && pvmanualdetailForm.submitted)"
+                    class="text-danger">
+                    Exch Rate is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion payment_exch_rate-->
+
+              <!--#region payment_base_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_base_amount" class="control-label">Base Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.payment_base_amount | number : '1.2-2'" name="p_payment_base_amount" maxlength="24"
+                    amount="payment_base_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion payment_base_amount-->
+
+              <!--#region  Remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_remarks" class="control-label">Remark *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.payment_remarks" maxlength="4000"
+                    name="p_payment_remarks" [readonly]="isButton" required #payment_remarks="ngModel"></textarea>
+                  <small
+                    *ngIf="(payment_remarks.errors?.required && payment_remarks.touched) || (payment_remarks.errors?.required && pvmanualdetailForm.submitted)"
+                    class="text-danger">
+                    Remarks is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion  Remarks-->
+            </div>
+            <!--#endregion  row-->
+
+            <!--#region  row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule" (click)="btnClearSysBank()" style="cursor: pointer;">To Bank
+                    Name </label>
+                  <div class="col-md-12 buttons">
+                    <span>
+                      <button [disabled]="isButton" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnlookupSysBank()" data-toggle="modal" data-target="#lookupModalSysBank"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.to_bank_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.to_bank_name" name="p_to_bank_name">
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>To Bank Account No</label>
+                  <input type="text" class="form-control" maxlength="50" [ngModel]="model.to_bank_account_no"
+                    name="p_to_bank_account_no" [readonly]="isButton">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>To Bank Account Name</label>
+                  <input type="text" class="form-control" maxlength="250" [ngModel]="model.to_bank_account_name"
+                    name="p_to_bank_account_name" [readonly]="isButton">
+                </div>
+              </div>
+              <!--#endregion code-->
+            </div>
+            <!--#endregion  row-->
+          </form>
+          <!--#endregion readonly-->
+        </div>
+
+        <div class="col-md-12" *ngIf="param != null">
+          <div class="card-header">
+            <h5 class="card-title">Payment Detail List </h5>
+          </div>
+          <div class="card-body">
+            <!--#region button add, delete-->
+            <div class="toolbar" [hidden]="isButton">
+              <button class="btn btn-info btn-round" (click)="btnAdd()" data-role="R00003140003315C">
+                Add
+              </button>
+
+              <button class="btn btn-danger btn-round" (click)="btnDeleteAll()" data-role="R00003140002315D"
+                id="button">
+                Delete
+              </button>
+              <!--#endregion button add, delete-->
+            </div>
+            <!--#region list view-->
+            <table id="datatablesPvManualDetail" datatable [dtOptions]="dtOptions"
+              class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th class="disabled-sorting">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="checkalltable"
+                          [(ngModel)]="selectedAllTable" (change)="selectAllTable();" />
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </th>
+                  <th>Branch </th>
+                  <th>Allocation</th>
+                  <th>Remark</th>
+                  <th>Currency</th>
+                  <th>Orig Amount</th>
+                  <th>Base Amount</th>
+                  <th style="text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of listpvmanualdetaildetail;let i=index ">
+                  <td style="text-align: center;">{{listpvmanualdetaildetail.numberIndex+i+1}}</td>
+                  <td class="disabled-sorting">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="row.selectedTable"
+                          (change)="checkIfAllTableSelected($event, row.id);">
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </td>
+                  <td style="width: 15%;">{{row.branch_name}}</td>
+                  <td style="width: 15%;">{{row.gl_link_name}}</td>
+                  <td style="width: 25%;">{{row.remarks}}</td>
+                  <td style="width: 15%;">{{row.orig_currency_code}} <br>{{row.exch_rate | number : '1.6-6'}}</td>
+                  <td style="text-align: right; width: 15%;">{{row.orig_amount | number : '1.2-2'}}</td>
+                  <td style="text-align: right; width: 15%">{{row.base_amount | number : '1.2-2'}}</td>
+                  <td style="text-align: center;">
+                    <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit" (click)="btnEdit(row.id)"><i
+                        class="fa fa-edit"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!--#endregion list view-->
+          </div>
+          <div class="card-footer ">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup pdc code-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalPdcCode"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupPdcCode" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Pdc No</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookuppdccode;let i=index ">
+                  <td style="text-align: center;">{{lookuppdccode.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td class="text-center" style="width: 70%;">{{ row.pdc_no }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowPdcCode(row.code, row.pdc_no)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup pdc code-->
+
+<!--#region lookup Branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSysBranch"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupSysBranch" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbranch;let i=index ">
+                  <td style="text-align: center;">{{lookupbranch.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBranch(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Branch-->
+
+<!--#region lookup sys bank -->
+<div class="modal" id="lookupModalSysBank" style="margin-top: -75px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <form>
+          <div class="col-md-12">
+            <div class="card-body col-md-12" style="min-width: 100%;">
+              <table id="datatablelookupSysBank" class="table table-striped table-bordered hover" cellspacing="0"
+                width="100%">
+                <thead>
+                  <tr>
+                    <th class="disabled-sorting">No</th>
+                    <th style="display: none;"></th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of lookupsysbank;let i=index ">
+                    <td style="text-align: center;">{{lookupsysbank.numberIndex+i+1}}</td>
+                    <td style="display: none;"></td>
+                    <td style="width: 100%;">{{ row.description }}</td>
+                    <td class="text-center">
+                      <button class="btn btn-outline-default btn-round"
+                        (click)="btnSelectRowSysBank(row.description)">Select</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup sys bank-->
+
+<!--#region lookup bank-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalBank" style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupBank" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Name</th>
+                  <th>Account No</th>
+                  <th>Account Name</th>
+                  <th>Currency</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbank;let i=index ">
+                  <td style="text-align: center;">{{lookupbank.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td style="width: 30%;">{{ row.description }}</td>
+                  <td class="text-center" style="width: 20%;">{{ row.bank_account_no }}</td>
+                  <td style="width: 30%;">{{ row.bank_account_name }}</td>
+                  <td style="width: 20%;" class="text-center">{{ row.currency_code }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBank(row.code, row.description, row.currency_code, row.gl_link_code)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup bank-->
+
+<!-- (+) Ari 2023-09-08 ket : add view button for reversal-->
+<!--#region lookup Approval-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalApproval"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+
+            <table id="datatableLookupApproval" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Employee</th>
+                  <th>Position</th>
+                  <th>Level</th>
+                  <th>Result</th>
+                  <th>Remark</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupapproval;let i=index ">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupapproval.numberIndex+i+1}}</td>
+                  <td class="if-no-edit-btn" style="width: 30%;text-align: left;">
+                    {{row.emp_name}} {{row.is_mandatory_level}}</td>
+                  <td style="width: 20%;text-align: left;">{{row.emp_position_name}}</td>
+                  <td style="width: 5%;text-align: center;">{{row.approval_level}}</td>
+                  <td style="width: 15%;text-align: center;">
+                    {{row.result_status}}<br>
+                    {{row.result_date}}
+                  </td>
+                  <td style="width: 30%;">{{row.result_remarks}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Approval-->
+<!-- (+) Ari 2023-09-08-->

@@ -1,0 +1,72 @@
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header">
+          <h5 class="card-title">Cashier Received Request Upload List (Interface)</h5>
+        </div>
+        <div class="card-body">
+          <!--#region button add-->
+          <div class="toolbar">
+            <button class="btn btn-info btn-round custom-button-width" (click)="btnDownload()"
+              data-role="R00003470000348P">
+              Download Template
+            </button>
+            <span class="btn btn-info btn-round btn-file custom-button-width">
+              <input type="file" accept=".pdf, .xls, .xlsx" (change)="onUploadReader($event)" />
+              <span>Upload Excel</span>
+            </span>
+            - {{tempFile}}
+            <button class="btn btn-success btn-round" [hidden]="empty === 0" (click)="btnPost()"
+              data-role="R00003470000348O">
+              Post
+            </button>
+            <button class="btn btn-warning btn-round" (click)="btnCancel()" data-role="R00003470000348R">
+              Cancel
+            </button>
+          </div>
+          <!--#endregion button add-->
+
+          <!--#region list view-->
+          <table id="datatableCashierReceivedRequestUpload" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="disabled-sorting">No</th>
+                <th style="display: none;"></th>
+                <th>Agreement No</th>
+                <th>Branch</th>
+                <th>Request Date</th>
+                <th>Currency</th>
+                <th>Request Amount</th>
+                <th>Remarks</th>
+                <th>Upload Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of listCashierReceivedRequestUpload;let i=index ">
+                <td style="text-align: center;">{{listCashierReceivedRequestUpload.numberIndex+i+1}}</td>
+                <td class="if-no-edit-btn" style="display: none;"></td>
+                <td style="text-align: center; width: 15%;">{{row.agreement_no}}</td>
+                <td style="text-align: center; width: 15%;">{{row.branch_name}}</td>
+                <td style="text-align: center; width: 10%;">{{row.request_date}}</td>
+                <td style="text-align: center; width: 5%;">{{row.request_currency_code}}</td>
+                <td style="text-align: right; width: 15%;">{{row.request_amount | number : '1.2-2'}}</td>
+                <td style="text-align: left; width: 15%;">{{row.request_remarks}}</td>
+                <td style="text-align: left; width: 15%;">{{row.manual_upload_remarks}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

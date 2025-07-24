@@ -1,0 +1,169 @@
+ <div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Withholding Tax History Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #taxhistorydetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(taxhistorydetailForm.value, taxhistorydetailForm.valid)">
+
+            <!--#region button back-->
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region id-->
+              <input type="hidden" class="form-control" [ngModel]="model.id" name="p_id" readonly>
+              <!--#endregion id-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Branch </label>
+                  <input type="text" class="form-control" [ngModel]="model.branch_name" maxlength="250"
+                    name="p_branch_name" readonly>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region payment_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Payment Date </label>
+                  <input class="form-control" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.payment_date" name="p_payment_date" [options]="myDatePickerOptions"
+                    #p_payment_date="ngModel" #payment_date="angular-mydatepicker" autocomplete="off" readonly />
+
+                </div>
+              </div>
+              <!--#endregion payment_date-->
+
+              <!--#region tax_payer_reff_code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Tax Payer Reff Code </label>
+                  <input type="text" class="form-control" [ngModel]="model.tax_payer_reff_code"
+                    name="p_tax_payer_reff_code" readonly>
+                </div>
+              </div>
+              <!--#endregion tax_payer_reff_code-->
+
+              <!--#region tax type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Tax Type </label>
+                  <select class='form-control col-md-8' name="p_tax_type" [(ngModel)]="model.tax_type"
+                    (change)="PageTax($event)" disabled>
+                    <option value='N21'>WITHOUT TAX - PERSONAL</option>
+                    <option value='N23'>WITHOUT TAX - CORPORATE</option>
+                    <option value='P21'>WITH TAX - PERSONAL</option>
+                    <option value='P23'>WITH TAX - CORPORATE</option>
+                  </select>
+                </div>
+              </div>
+              <!--#endregion tax type-->
+
+              <!--#region tax_file_no-->
+              <div class="col-md-4" [hidden]="model.tax_type === 'N21' || model.tax_type === 'N23'">
+                <div class="form-group">
+                  <label>Tax File No </label>
+                  <input type="text" class="form-control" [ngModel]="model.tax_file_no" name="p_tax_file_no" readonly>
+                </div>
+              </div>
+              <!--#endregion tax_file_no-->
+
+              <!--#region tax_file_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Tax File Name </label>
+                  <input type="text" class="form-control" [ngModel]="model.tax_file_name" name="p_tax_file_name"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion tax_file_name-->
+
+              <!--#region payment_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Payment Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.payment_amount | number : '1.2-2'" name="p_payment_amount" maxlength="24"
+                    amount="payment_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion payment_amount-->
+
+              <!--#region tax_pct-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Tax Pct</label>
+                  <input type="text" class="form-control col-md-4" style="text-align: right;"
+                    [ngModel]="model.tax_pct | number : '1.6-6'" name="p_tax_pct" maxlength="24"
+                    amount="tax_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion tax_pct-->
+
+              <!--#region tax_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Tax Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.tax_amount | number : '1.2-2'" name="p_tax_amount" maxlength="24"
+                    amount="tax_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion tax_amount-->
+
+              <!--#region reff_no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Reff No </label>
+                  <input type="text" class="form-control" [ngModel]="model.reff_no" name="p_reff_no" readonly>
+                </div>
+              </div>
+              <!--#endregion reff_no-->
+
+              <!--#region reff_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Reff Name </label>
+                  <input type="text" class="form-control" [ngModel]="model.reff_name" name="p_reff_name" readonly>
+                </div>
+              </div>
+              <!--#endregion reff_name-->
+
+              <!--#region  Remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_remarks" class="control-label">Remark </label>
+                  <textarea type="text" class="form-control" [ngModel]="model.cashier_remarks" maxlength="4000"
+                    name="p_cashier_remarks" readonly #cashier_remarks="ngModel"></textarea>
+                </div>
+              </div>
+              <!--#endregion  Remarks-->
+            </div>
+            <!--#endregion  row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

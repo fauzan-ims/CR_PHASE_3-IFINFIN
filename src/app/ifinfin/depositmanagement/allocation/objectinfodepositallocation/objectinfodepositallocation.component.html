@@ -1,0 +1,294 @@
+<div class="main-content">
+    <!-- spinner region -->
+    <div class="panel-container-spinner" *ngIf="showSpinner">
+        <app-spinner class="spinner-container"></app-spinner>
+    </div>
+    <!-- end spinner region -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ">
+                <!--#region watermark-->
+                <div class="watermark" hidden>
+                    <h6>{{this.companyName}}</h6>
+                    <h6>{{this.userName}}</h6>
+                    <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+                </div>
+                <!--#endregion watermark-->
+                <div class="card-header ">
+                    <h4 class="card-title">Allocation Info</h4>
+                </div>
+                <div class="card-body ">
+
+                    <!--#region row-->
+                    <div class="row">
+                        <!--#region code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Allocation No </label>
+                                <input type="text" class="form-control" [ngModel]="model.code" maxlength="50"
+                                    name="p_code" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion code-->
+
+                        <!--#region branch_name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Branch </label>
+                                <input type="text" class="form-control" [ngModel]="model.branch_name" maxlength="50"
+                                    name="p_branch_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion branch_name-->
+
+                        <!--#region  Status-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input readonly type="text" class="form-control" [ngModel]="model.allocation_status"
+                                    name="p_allocation_status">
+                            </div>
+                        </div>
+                        <!--#endregion  Status-->
+
+                        <!--#region  allocation_trx_date -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="allocation_trx_date" class="control-label">Allocation Date </label>
+                                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.allocation_trx_date" name="p_allocation_trx_date"
+                                    [options]="myDatePickerOptions" #p_allocation_trx_date="ngModel"
+                                    #allocation_trx_date="angular-mydatepicker" autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion allocation_trx_date -->
+
+                        <!--#region agreement no-->
+                        <div class="col-md-4">
+                            <!--#region row-->
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Agreement No</label>
+                                        <input type="text" class="form-control" [ngModel]="model.agreement_external_no"
+                                            name="p_agreement_external_no" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Currency</label>
+                                        <input readonly type="text" class="form-control" [ngModel]="model.currency_code"
+                                            name="p_currency_code">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--#endregion row-->
+                        </div>
+                        <!--#endregion agreement no-->
+
+                        <!--#region client name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Client Name</label>
+                                <input type="text" class="form-control" [ngModel]="model.client_name"
+                                    name="p_client_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion client name-->
+
+                        <!--#region allocation_value_date-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="allocation_value_date" class="control-label">Value Date *</label>
+                                <input [ngStyle]="getStyles(true)" class="form-control col-md-6"
+                                    placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.allocation_value_date" name="p_allocation_value_date"
+                                    [options]="myDatePickerOptions" (click)="allocation_value_date.toggleCalendar()"
+                                    #p_allocation_value_date="ngModel" #allocation_value_date="angular-mydatepicker"
+                                    autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion allocation_value_date -->
+
+                        <!--#region deposit_code-->
+                        <div class="col-md-4">
+                            <!--#region row-->
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Deposit</label>
+                                        <input type="text" class="form-control" [ngModel]="model.deposit_type"
+                                            name="p_deposit_type" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Currency</label>
+                                        <input readonly type="text" class="form-control"
+                                            [ngModel]="model.allocation_currency_code"
+                                            name="p_allocation_currency_code">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--#endregion row-->
+                        </div>
+                        <!--#endregion deposit_code-->
+
+                        <!--#region deposit_amount-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Outstanding Deposit Amount</label>
+                                <div class="row" style="margin: auto;">
+                                    <input type="text" class="form-control col-md-6" style="text-align: right;"
+                                        [ngModel]="model.deposit_amount | number : '1.2-2'" name="p_deposit_amount"
+                                        maxlength="24" amount="deposit_amount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <!--#endregion deposit_amount-->
+
+                        <!--#region allocation_orig_amount-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="allocation_orig_amount" class="control-label">Orig Amount <b
+                                        [hidden]="isLabel" style="color: red;">Amount updated by detail
+                                        allocation</b></label>
+                                <input type="text" class="form-control col-md-6" style="text-align: right;"
+                                    [ngModel]="model.allocation_orig_amount | number : '1.2-2'"
+                                    name="p_allocation_orig_amount" #allocation_orig_amount="ngModel" maxlength="24"
+                                    amount="allocation_orig_amount" readonly>
+                            </div>
+                        </div>
+
+                        <!--#region allocation_exch_rate-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="allocation_exch_rate" class="control-label">Exch Rate</label>
+                                <input type="text" class="form-control col-md-6" style="text-align: right;"
+                                    [ngModel]="model.allocation_exch_rate | number : '1.6-6'"
+                                    name="p_allocation_exch_rate" required #allocation_exch_rate="ngModel"
+                                    maxlength="23" rate="allocation_exch_rate" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion allocation_exch_rate-->
+
+                        <!--#region allocation_base_amount-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Base Amount <b [hidden]="isLabel" style="color: red;">Amount updated by
+                                        detail
+                                        allocation</b></label>
+                                <input type="text" class="form-control col-md-6" style="text-align: right;"
+                                    [ngModel]="model.allocation_base_amount | number : '1.2-2'"
+                                    name="p_allocation_base_amount" maxlength="24" amount="allocation_base_amount"
+                                    readonly>
+                            </div>
+                        </div>
+                        <!--#endregion allocation_base_amount-->
+
+                        <!--#region is_received_request-->
+                        <div class="col-md-4">
+                            <label>Received Type</label>
+                            <div class="form-group col-md-6" style="margin-left: 15px;">
+                                <div class="row">
+                                    <div class="form-check-radio form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="p_is_received_request"
+                                                value="0" disabled [ngModel]="model.is_received_request">Entry
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check-radio form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="p_is_received_request"
+                                                value="1" disabled [ngModel]="model.is_received_request">Request
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--#endregion is_received_request-->
+
+                        <!--#region allocationt_remarks-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="allocationt_remarks" class="control-label">Remark *</label>
+                                <textarea type="text" class="form-control" maxlength="4000"
+                                    [ngModel]="model.allocationt_remarks" name="p_allocationt_remarks"
+                                    #allocationt_remarks="ngModel" readonly></textarea>
+                            </div>
+                        </div>
+                        <!--#endregion allocationt_remarks-->
+                    </div>
+                    <!--#endregion  row-->
+                </div>
+                <div *ngIf="param != null" class="row">
+                    <div class="col-md-12">
+                        <div class="card-header">
+                            <h4 class="card-title">Allocation List </h4>
+                        </div>
+                        <div class="card-body">
+                            <!--#region list view-->
+                            <table id="datatableAllocationDetail" datatable [dtOptions]="dtOptions"
+                                class="table table-striped table-bordered row-border hover" cellspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="disabled-sorting">No</th>
+                                        <th style="display: none;"></th>
+                                        <th>Allocation</th>
+                                        <th>Invoice No/ Date/ Due Date</th>
+                                        <th>Invoice Amount/ PPN/ PPH</th>
+                                        <th>Installment No</th>
+                                        <th>Due Amount</th>
+                                        <th>Orig Amount</th>
+                                        <th>Base Amount</th>
+                                        <th>Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let row of listallocationdetail; let i = index">
+                                        <td style="text-align: center;">{{listallocationdetail.numberIndex+i+1}}</td>
+                                        <td style="display: none;"></td>
+                                        <td style="width: 15%;">{{row.transaction_no}} <br> {{row.transaction_name}}
+                                        </td>
+                                        <td style="text-align: right;width: 15%;"> {{row.invoice_external_no}} <br>
+                                            {{row.invoice_date}}
+                                            <br> {{row.invoice_due_date}}
+                                        </td>
+                                        <td style="text-align: right;width: 15%;"> {{row.invoice_billing_amount | number
+                                            : '1.2-2'}} <br>
+                                            {{row.invoice_ppn_amount | number : '1.2-2'}} <br> {{row.invoice_pph_amount
+                                            | number :
+                                            '1.2-2'}} </td>
+                                        <td style="text-align: right;width: 10%;">{{row.installment_no}} </td>
+                                        <td style="text-align: right;width: 15%;"> {{row.innitial_amount | number :
+                                            '1.2-2'}} </td>
+                                        <td style="text-align: right;width: 15%;"> {{row.orig_amount | number :
+                                            '1.2-2'}} <br> {{row.exch_rate | number : '1.6-6'}} </td>
+                                        <td style="text-align: right;width: 15%;"> {{row.base_amount | number :
+                                            '1.2-2'}} </td>
+                                        <td class="disabled-sorting">
+                                            <div class="form-check" style="text-align: center;">
+                                                <label class="form-check-label">
+                                                    <input type="hidden" value="{{row.id}}" name="p_id">
+                                                    <input disabled id="is_paid{{i}}" class="form-check-input"
+                                                        type="checkbox" [checked]="row.is_paid" name="p_is_paid">
+                                                    <span class="form-check-sign"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--#endregion list view-->
+                        </div>
+                        <div class="card-footer ">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

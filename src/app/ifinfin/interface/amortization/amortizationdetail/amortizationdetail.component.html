@@ -1,0 +1,184 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5>Amortization Payment Info (Interface)</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region button back-->
+          <!-- <button [hidden]="model.job_status !== 'FAILED'" type="button" data-role="R00010760001077O"
+            class="btn btn-success btn-round" (click)="btnPost(model.agreement_no)">Post</button> -->
+
+          <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+          <!--#endregion button back-->
+
+          <!--#region row-->
+          <div class="row">
+            <!--#region agreement_no-->
+            <div class="col-md-4" hidden>
+              <div class="form-group">
+                <label>Agreement No </label>
+                <input type="text" class="form-control" [ngModel]="model.agreement_no" maxlength="50"
+                  name="p_agreement_no" readonly>
+              </div>
+            </div>
+            <!--#endregion agreement_no-->
+
+            <!--#region agreement_external_no-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Agreement No </label>
+                <input type="text" class="form-control" [ngModel]="model.agreement_external_no" maxlength="50"
+                  name="p_agreement_external_no" readonly>
+              </div>
+            </div>
+            <!--#endregion agreement_external_no-->
+
+            <!--#region client_name-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Client Name</label>
+                <input type="text" class="form-control" [ngModel]="model.client_name" name="p_client_name" readonly>
+              </div>
+            </div>
+            <!--#endregion client_name-->
+
+            <!--#region installment_no-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Installment No</label>
+                <input type="text" class="form-control" [ngModel]="model.installment_no" name="p_installment_no"
+                  readonly>
+              </div>
+            </div>
+            <!--#endregion installment_no-->
+          </div>
+          <!--#endregion row-->
+
+          <!--#region row-->
+          <div class="row">
+            <!--#region payment_date-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Payment Date </label>
+                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                  [ngModel]="model.payment_date" name="p_payment_date" [options]="myDatePickerOptions"
+                  #p_payment_date="ngModel" readonly #payment_date="angular-mydatepicker" autocomplete="off" />
+              </div>
+            </div>
+            <!--#endregion payment_date-->
+
+            <!--#region value_date-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Value Date </label>
+                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                  [ngModel]="model.value_date" name="p_value_date" [options]="myDatePickerOptions"
+                  #p_value_date="ngModel" readonly #value_date="angular-mydatepicker" autocomplete="off" />
+              </div>
+            </div>
+            <!--#endregion value_date-->
+
+            <!--#region payment_source_type-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Payment Source Type</label>
+                <input type="text" class="form-control" maxlength="3" [ngModel]="model.payment_source_type"
+                  name="p_payment_source_type" readonly>
+              </div>
+            </div>
+            <!--#endregion payment_source_type-->
+          </div>
+          <!--#endregion row-->
+
+          <!--#region row-->
+          <div class="row">
+            <!--#region payment_source_no-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Payment Source No</label>
+                <input type="text" class="form-control" [ngModel]="model.payment_source_no" maxlength="50"
+                  name="p_payment_source_no" readonly>
+              </div>
+            </div>
+            <!--#endregion payment_source_no-->
+
+            <!--#region payment_amount-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="payment_amount" class="control-label">Payment Amount</label>
+                <div class="col-md-6" style="margin-left: -15px;">
+                  <input type="text" class="form-control" [ngModel]="model.payment_amount | number : '1.2-2'"
+                    name="p_payment_amount" disabled style="text-align: right;" />
+                </div>
+              </div>
+            </div>
+            <!--#endregion payment_amount-->
+
+            <!--#region principal_amount-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="principal_amount" class="control-label">Principal Amount</label>
+                <div class="col-md-6" style="margin-left: -15px;">
+                  <input type="text" class="form-control" [ngModel]="model.principal_amount | number : '1.2-2'"
+                    name="p_principal_amount" disabled style="text-align: right;" />
+                </div>
+              </div>
+            </div>
+            <!--#endregion principal_amount-->
+
+            <!--#region interest_amount-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="interest_amount" class="control-label">Interest Amount</label>
+                <div class="col-md-6" style="margin-left: -15px;">
+                  <input type="text" class="form-control" [ngModel]="model.interest_amount | number : '1.2-2'"
+                    name="p_interest_amount" disabled style="text-align: right;" />
+                </div>
+              </div>
+            </div>
+            <!--#endregion interest_amount-->
+          </div>
+          <!--#endregion row-->
+
+          <!--#region row-->
+          <div class="row" hidden>
+            <!--#region job_status-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Job Status</label>
+                <input type="text" class="form-control" [ngModel]="model.job_status" name="p_job_status" readonly>
+              </div>
+            </div>
+            <!--#endregion job_status-->
+
+            <!--#region failed_remarks-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Failed Remark </label>
+                <textarea type="text" class="form-control" [ngModel]="model.failed_remarks" name="p_failed_remarks"
+                  readonly>
+                  </textarea>
+              </div>
+            </div>
+            <!--#endregion failed_remarks-->
+          </div>
+          <!--#endregion row-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

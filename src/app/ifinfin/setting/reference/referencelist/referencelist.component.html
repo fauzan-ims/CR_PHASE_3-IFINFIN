@@ -1,0 +1,110 @@
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">OJK Reference List</h5>
+        </div>
+        <div class="card-body">
+          <!--#region button add-->
+          <button class="btn btn-info btn-round" (click)="btnAdd()" data-role="R00002950000000C">
+            Add
+          </button>
+          <!--#endregion button add-->
+
+          <!--#region Lookup Reference-->
+          <div class="col-md-4">
+            <label>Reference Type</label>
+            <div class="form-group">
+              <span class="col-md-12">
+                <button class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                  (click)="btnLookupReference()" data-toggle="modal" data-target="#lookupModalReference" href="#"><i
+                    class="fa fa-search-plus"></i></button>
+                {{model.reference_type_name}}
+                <input type="hidden" class="form-control" [ngModel]="model.reference_type_code"
+                  name="p_reference_type_code" required #reference_type_code="ngModel">
+              </span>
+            </div>
+          </div>
+          <!--#endregion Lookup Reference-->
+
+          <!--#region list view-->
+          <table id="datatable" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="disabled-sorting">No</th>
+                <th style="display: none;"></th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Reference Type</th>
+                <th>OJK Code</th>
+                <th>Active</th>
+                <th style="text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of listreference;let i=index ">
+                <td style="text-align: center;">{{listreference.numberIndex+i+1}}</td>
+                <td class="if-no-edit-btn" style="display: none;"></td>
+                <td style="text-align: center; width: 15%;">{{row.code}}</td>
+                <td style="width: 45%;">{{row.description}}</td>
+                <td style="width: 20%;">{{row.reference_type_name}}</td>
+                <td style="width: 15%;">{{row.ojk_code}}</td>
+                <td style="text-align: center; width: 10%;">{{row.is_active}}</td>
+                <td style="text-align: center;">
+                  <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit" (click)="btnEdit(row.code)">
+                    <i class="fa fa-edit"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Reference-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalReference"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12" style="width: 100%">
+            <table id="datatableLookupReference" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th style="text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupReference;let i=index ">
+                  <td style="text-align: center;">{{lookupReference.numberIndex+i+1}}</td>
+                  <td class="if-no-edit-btn" style="display: none;"></td>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.description }}</td>
+                  <td class="text-right">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowReference(row.code, row.description)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup lookupReference-->

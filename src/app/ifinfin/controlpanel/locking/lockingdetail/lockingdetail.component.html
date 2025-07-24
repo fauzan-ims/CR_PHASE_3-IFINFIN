@@ -1,0 +1,97 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+      <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+      <div class="col-md-12 buttons btn-lookup-margin">
+          <div class="card ">
+              <div class="card-header ">
+                  <h5 class="card-title">Transaction Lock Info</h5>
+              </div>
+              <div class="card-body ">
+                  <!--#region form-->
+                  <form #trasactionlockForm="ngForm"
+                      (ngSubmit)="onFormSubmit(trasactionlockForm.value, trasactionlockForm.valid)">
+
+                      <!--#region button submit dan back-->
+                      <button [hidden]="this.param == null" class="btn btn-success btn-round col-md-4" type="button"
+                          (click)="btnActive(model.id)" data-role="R00004730000001U">
+                          <span [hidden]="model.is_active === true || this.param == null">Active</span>
+                          <span [hidden]="model.is_active === false || this.param == null">Inactive</span>
+                      </button>
+                      <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+                      <!--#endregion button submit dan back-->
+
+                      <!--#region row-->
+                      <div class="row">
+                          <!--#region user_name-->
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label for="user_name" class="control-label">User</label>
+                                  <input id="user_name" type="text" class="form-control" [ngModel]="model.user_name"
+                                      name="p_user_name" #user_name="ngModel" title="user_name" readonly>
+                              </div>
+                          </div>
+                          <!--#endregion user_name-->
+
+                          <!--#region access_date-->
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label for="access_date" class="control-label">Access Date</label>
+                                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                                      [ngModel]="model.access_date" name="p_access_date" readonly
+                                      [options]="myDatePickerOptions" (click)="access_date.toggleCalendar()"
+                                      #p_access_date="ngModel" #access_date="angular-mydatepicker"
+                                      autocomplete="off" />
+                              </div>
+                          </div>
+                          <!--#endregion access_date-->
+
+                          <!--#region reff_name-->
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label for="reff_name" class="control-label">Menu</label>
+                                  <input id="reff_name" type="text" class="form-control" [ngModel]="model.reff_name"
+                                      name="p_reff_name" #reff_name="ngModel" title="reff_name" readonly>
+                              </div>
+                          </div>
+                          <!--#endregion reff_name-->
+
+                          <!--#region reff_code-->
+                          <div class="col-md-4">
+                              <div class="form-group">
+                                  <label for="reff_code" class="control-label">Code</label>
+                                  <input id="reff_code" type="text" class="form-control" [ngModel]="model.reff_code"
+                                      name="p_reff_code" #reff_code="ngModel" title="reff_code" readonly>
+                              </div>
+                          </div>
+                          <!--#endregion reff_code-->
+
+
+                          <!--#region is_active-->
+                          <div class="col-md-4">
+                              <div class="form-check mt-3" style="margin-left: -35px;">
+                                  <div class="form-check">
+                                      <label class="form-check-label">
+                                          <input disabled class="form-check-input" type="checkbox"
+                                              [ngModel]="model.is_active" name="p_is_active">
+                                          Active
+                                          <span class="form-check-sign"></span>
+                                      </label>
+                                  </div>
+                              </div>
+                          </div>
+                          <!--#endregion is_active-->
+                      </div>
+                      <!--#endregion row-->
+                  </form>
+                  <!--#endregion form-->
+              </div>
+              <div class="card-footer ">
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

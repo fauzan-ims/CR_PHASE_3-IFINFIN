@@ -1,0 +1,131 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Transaction Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #receiptconfirmdetaildetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(receiptconfirmdetaildetailForm.value, receiptconfirmdetaildetailForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" [hidden]="model.orig_curr_code === 'IDR'"
+              data-role="R00003090002310C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <input type="text" [ngModel]="this.params" name="p_id" hidden>
+              <input type="text" [ngModel]="this.param" name="p_received_from_core_code" hidden>
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Request No</label>
+                  <input type="text" class="form-control" maxlength="50" [ngModel]="model.received_request_code"
+                    name="p_received_request_code" readonly>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region orig_curr_code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Currency</label>
+                  <input type="text" class="form-control col-md-4" maxlength="3" [ngModel]="model.orig_curr_code"
+                    name="p_orig_curr_code" readonly>
+                </div>
+              </div>
+              <!--#endregion orig_curr_code-->
+
+              <!--#region orig_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Orig Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.orig_amount | number : '1.2-2'" name="p_orig_amount" maxlength="24"
+                    amount="orig_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion orig_amount-->
+
+              <!--#region exch_rate-->
+              <!-- <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="exch_rate" class="control-label">Exch Rate *</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.exch_rate | number : '1.6-6'" name="p_exch_rate" required #exch_rate="ngModel"
+                    maxlength="23" rate="exch_rate" (change)="exchRate($event)" [readonly]="isButton">
+                  <small *ngIf="(exch_rate.errors?.required && exch_rate.touched) || (exch_rate.errors?.required && receiptconfirmdetaildetailForm.submitted)" class="text-danger">
+                    Exch Rate is required
+                  </small>
+                </div>
+              </div> -->
+              <!--#endregion exch_rate-->
+
+              <!--#region exch_rate-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="exch_rate" [hidden]="model.orig_curr_code === 'IDR'" class="control-label">Exch Rate
+                    *</label>
+                  <label for="exch_rate" [hidden]="model.orig_curr_code !== 'IDR'" class="control-label">Exch Rate
+                  </label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.exch_rate | number : '1.6-6'" name="p_exch_rate"
+                    [required]="model.orig_curr_code !== 'IDR'" #exch_rate="ngModel" maxlength="23" rate="exch_rate"
+                    (change)="exchRate($event)"
+                    [readonly]="model.received_status !=='HOLD' || model.orig_curr_code === 'IDR'">
+                  <small
+                    *ngIf="(exch_rate.errors?.required && exch_rate.touched) || (exch_rate.errors?.required && receiptconfirmdetaildetailForm.submitted)"
+                    class="text-danger">
+                    Exch Rate is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion exch_rate-->
+
+              <!--#region base_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.base_amount | number : '1.2-2'" name="p_base_amount" readonly maxlength="24"
+                    amount="base_amount">
+                </div>
+              </div>
+              <!--#endregion base_amount-->
+
+              <!--#region received_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Remark</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.received_remarks"
+                    name="p_received_remarks" readonly> </textarea>
+                </div>
+              </div>
+              <!--#endregion received_remarks-->
+            </div>
+            <!--#endregion  row-->
+          </form>
+          <!--#endregion readonly-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

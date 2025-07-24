@@ -1,0 +1,125 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Fund In Used Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #fundinuseddetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(fundinuseddetailForm.value, fundinuseddetailForm.valid)">
+
+            <!--#region button back-->
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <input type="text" [ngModel]="model.code" maxlength="50" name="p_id" hidden>
+              <!--#endregion code-->
+
+              <!--#region agreement no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Agreement No </label>
+                  <input type="text" class="form-control" [ngModel]="model.agreement_external_no"
+                    name="p_agreement_external_no" readonly>
+                </div>
+              </div>
+              <!--#endregion agreement no-->
+
+              <!--#region client_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Client Name</label>
+                  <input type="text" class="form-control" [ngModel]="model.client_name" name="p_client_name" readonly>
+                </div>
+              </div>
+              <!--#endregion client_name-->
+
+              <!--#region charges_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Charges Date </label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.charges_date" name="p_charges_date" [options]="myDatePickerOptions"
+                    #p_charges_date="ngModel" #charges_date="angular-mydatepicker" autocomplete="off" readonly />
+                </div>
+              </div>
+              <!--#endregion charges_date-->
+
+              <!--#region charges_type_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Charges Type</label>
+                  <input type="text" class="form-control" [ngModel]="model.charges_type_name" maxlength="15"
+                    name="p_charges_type_name" readonly>
+                </div>
+              </div>
+              <!--#endregion charges_type_name-->
+
+              <!--#region transaction_no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Transaction No </label>
+                  <input type="text" class="form-control" [ngModel]="model.transaction_no" name="p_transaction_no"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion transaction_no-->
+
+              <!--#region charges_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Charges Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.charges_amount | number : '1.2-2'" name="p_charges_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion charges_amount-->
+
+              <!--#region source_reff_module-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="source_reff_module" class="control-label">Source Module</label>
+                  <input type="text" [disabled]="param == null" class="form-control" maxlength="50"
+                    [ngModel]="model.source_reff_module" readonly name="p_source_reff_module">
+                </div>
+              </div>
+              <!--#endregion source_reff_module-->
+
+              <!--#region source_reff_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="source_reff_remarks" class="control-label">Remark</label>
+                  <textarea type="text" [disabled]="param == null" class="form-control" maxlength="250"
+                    [ngModel]="model.source_reff_remarks" readonly name="p_source_reff_remarks"></textarea>
+                </div>
+              </div>
+              <!--#endregion source_reff_remarks-->
+            </div>
+            <!--#endregion  row-->
+
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

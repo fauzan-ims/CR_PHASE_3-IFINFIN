@@ -1,0 +1,157 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h4 class="card-title">Report Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #reportForm="ngForm" (ngSubmit)="onFormSubmit(reportForm.value, reportForm.valid)">
+
+            <!--#region button save dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00010300021031C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button save dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code" hidden>
+              <!--#endregion code-->
+
+              <!--#region name-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="name" class="control-label">Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.name" maxlength="250" name="p_name" #name="ngModel" required>
+                  <small *ngIf="(name.errors?.required && name.touched) || (name.errors?.required && reportForm.submitted)" class="text-danger">
+                    Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion name-->
+
+              <!--#region report_type-->
+              <div class="col-md-4">
+                <label>Type</label>
+                <div class="form-group col-md-12">
+                  <div class="row">
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_report_type" value="MANAGEMENT"
+                          [(ngModel)]="model.report_type">MANAGEMENT
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_report_type" value="TRANSACTION"
+                          [(ngModel)]="model.report_type">TRANSACTION
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_report_type" value="NOT BOTH"
+                          [(ngModel)]="model.report_type">NOT BOTH
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion report_type-->
+
+              <!--#region table_name-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="table_name" class="control-label">Table Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.table_name" maxlength="250" name="p_table_name"
+                    #table_name="ngModel" required>
+                  <small *ngIf="(table_name.errors?.required && table_name.touched) || (table_name.errors?.required && reportForm.submitted)" class="text-danger">
+                    Table Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion table_name-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region sp_name-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="sp_name" class="control-label">SP Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.sp_name" maxlength="250" name="p_sp_name" #sp_name="ngModel"
+                    required>
+                  <small *ngIf="(sp_name.errors?.required && sp_name.touched) || (sp_name.errors?.required && reportForm.submitted)" class="text-danger">
+                    SP Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion sp_name-->
+
+              <!--#region screen_name-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="screen_name" class="control-label">Screen Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.screen_name" maxlength="250" name="p_screen_name"
+                    #screen_name="ngModel" required>
+                  <small *ngIf="(screen_name.errors?.required && screen_name.touched) || (screen_name.errors?.required && reportForm.submitted)" class="text-danger">
+                    Screen Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion screen_name-->
+
+              <!--#region rpt_name-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="rpt_name" class="control-label">Crystal Report Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.rpt_name" maxlength="250" name="p_rpt_name"
+                    #rpt_name="ngModel" required>
+                  <small *ngIf="(rpt_name.errors?.required && rpt_name.touched) || (rpt_name.errors?.required && reportForm.submitted)" class="text-danger">
+                    Crystal Report Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion rpt_name-->
+
+              <!--#region is_active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_active-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#end region form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

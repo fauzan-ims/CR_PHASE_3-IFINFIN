@@ -1,0 +1,50 @@
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">Cashier Transaction List</h5>
+        </div>
+        <div class="card-body">
+          <div class="toolbar">
+            <!--#region button add-->
+            <button class="btn btn-info btn-round" (click)="btnAdd()" id="button" data-role="R00002980000000C">
+              Add
+            </button>
+            <!--#endregion button add-->
+          </div>
+          <!--#region list view-->
+          <table id="datatable" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="disabled-sorting">No</th>
+                <th style="display: none;"></th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Module</th>
+                <th>SP Name</th>
+                <th class="text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of listcashiertransaction;let i=index ">
+                <td style="text-align: center;">{{listcollectiongroupassignmentrequest.numberIndex+i+1}}</td>
+                <th style="display: none;"></th>
+                <td style="text-align: center; width: 15%;">{{row.code}}</td>
+                <td style="text-align: left; width: 35%;">{{row.description}}</td>
+                <td style="text-align: left; width: 25%;">{{row.module_name}}</td>
+                <td style="text-align: left; width: 25%;">{{row.sp_name}}</td>
+                <td style="text-align: center;">
+                  <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit" (click)="btnEdit(row.code)"><i
+                      class="fa fa-edit"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

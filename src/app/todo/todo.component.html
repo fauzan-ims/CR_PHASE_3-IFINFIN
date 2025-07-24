@@ -1,0 +1,100 @@
+<router-outlet></router-outlet>
+
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+
+<!--#region TODO TEST-->
+<div class="todo-high">
+  <div class="main-content">
+      <div class="row">
+          <div class="" *ngFor="let row of listmasterbenchmark;let i=index ">
+              <a title="{{row.keterangan}}" style="cursor: pointer; text-decoration:none" (click)="btnHigh(row.link_address)">
+                  <div class="card card-stats" *ngIf="row.priority == 'HIGH'">
+                      <div class="card-header card-header-danger card-header-icon">
+                          <div class="card-icon">
+                              <p style="color: #eee;"><b>{{row.branch_name}}</b></p>
+                          </div>
+                          <h1 class="card-title"><b>{{row.count_data}}</b></h1>
+                      </div>
+                      <div class="card-footerr">
+                          <div class="stats">
+                              <i>{{row.keterangan}}</i>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="todo-medium">
+  <div class="main-content">
+      <div class="row">
+          <div class="" *ngFor="let row of listmasterbenchmark;let i=index ">
+              <a title="{{row.keterangan}}" style="cursor: pointer; text-decoration:none" (click)="btnMedium(row.link_address)">
+                  <div class="card card-stats" *ngIf="row.priority == 'MEDIUM'">
+                      <div class="card-header card-header-warning card-header-icon">
+                          <div class="card-icon">
+                              <p style="color: #eee;"><b>{{row.branch_name}}</b></p>
+                          </div>
+                          <h1 class="card-title"><b>{{row.count_data}}</b></h1>
+                      </div>
+                      <div class="card-footerr">
+                          <div class="stats">
+                              <i> {{row.keterangan}}</i>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+      </div>
+  </div>
+</div>=
+
+<div class="todo-low">
+  <div class="main-content">
+      <div class="row">
+          <div class="" *ngFor="let row of listmasterbenchmark;let i=index ">
+            <!-- href="{{row.link_address}}" -->
+              <a title="{{row.keterangan}}" style="cursor: pointer; text-decoration:none"  (click)="btnLow(row.link_address)" >
+                  <div class="card card-stats" *ngIf="row.priority == 'LOW'">
+                      <div class="card-header card-header-info card-header-icon">
+                          <div class="card-icon">
+                              <p style="color: #eee;"><b>{{row.branch_name}}</b></p>
+                          </div>
+                          <h1 class="card-title"><b>{{row.count_data}}</b></h1>
+                      </div>
+                      <div class="card-footerr">
+                          <div class="stats">
+                              <i>{{row.keterangan}}</i>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- batas  -->
+<div class="date">
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="">
+                    <div class="card card-calendar">
+                        <div class="card-content">
+                            <div id="fullCalendar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

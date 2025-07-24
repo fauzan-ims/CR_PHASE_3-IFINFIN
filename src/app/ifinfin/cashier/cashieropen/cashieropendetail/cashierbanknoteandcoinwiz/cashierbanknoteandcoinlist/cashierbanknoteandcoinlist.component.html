@@ -1,0 +1,63 @@
+<div class="main-content margin-wizard-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card-body">
+        <!--#region button add-->
+        <div class="toolbar" [hidden]="this.status !=='OPEN'">
+          <button id="reloadWiz" class="btn btn-info btn-round" (click)="this.callGetrow()" hidden>
+          </button>
+          <button class="btn btn-info btn-round" (click)="btnSaveList()" data-role="R00003160004317C">
+            Save
+          </button>
+        </div>
+        <!--#endregion button add-->
+
+        <!--#region list view-->
+        <table id="datatableCashierBankNoteAndCoinList" datatable [dtOptions]="dtOptions"
+          class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th class="disabled-sorting">No</th>
+              <th style="display: none;"></th>
+              <th style="width: 30%;">Bank Note</th>
+              <th style="width: 20%;">Type</th>
+              <th style="width: 20%;">Value Amount</th>
+              <th style="width: 15%;">Quantity</th>
+              <th style="width: 15%;">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of listbanknoteandcoin; let i = index">
+              <td style="text-align: center;">{{listbanknoteandcoin.numberIndex+i+1}}</td>
+              <td style="display: none;"><input name="p_id" [ngModel]="row.id"></td>
+              <td style="width: 30%;">{{row.description}} </td>
+              <td style="width: 20%;">{{row.type}} </td>
+              <td style="width: 20%;">{{row.value_amount}} </td>
+              <td style="text-align: right;">
+                <div class="form-group">
+                  <input id="quantity{{i}}" class="text-right" type="text" value="{{row.quantity}}" name="p_quantity"
+                    (change)="changeQuantity($event, row.id, i)" pattern={{NumberOnlyPattern}}
+                    [disabled]="this.status !=='OPEN'">
+                  <input class="text-right" type="hidden" value="{{row.value_amount}}" name="p_value_amount">
+                </div>
+              </td>
+              <td style="text-align: right;">
+                <div class="form-group">
+                  <input id="total_amount{{i}}" (blur)="onBlur($event,i,'amount')" (focus)="onFocus($event,i,'amount')"
+                    class="text-right" type="text" value="{{row.total_amount | number : '1.2-2'}}" amount="total_amount"
+                    name="p_total_amount" readonly [disabled]="this.status !=='OPEN'">
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--#endregion list view-->
+      </div>
+    </div>
+  </div>
+</div>

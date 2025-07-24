@@ -1,0 +1,112 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Global Param Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #globalparamForm="ngForm" (ngSubmit)="onFormSubmit(globalparamForm.value, globalparamForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button [hidden]="model.is_editable === false" type="submit" class="btn btn-info btn-round"
+              data-role="R00004760000002C">Save</button>
+
+            <button [hidden]="this.param === null" class="btn btn-success btn-round col-md-4"
+              style="width: fit-content;" type="button" data-role="R00004760000003U" (click)="btnEditable(model.code)">
+              <span [hidden]="model.is_editable === true">Editable</span>
+              <span [hidden]="model.is_editable === false">Non Editable</span>
+            </button>
+
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code" class="control-label">Code *</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly" required #code="ngModel">
+                  <small
+                    *ngIf="(code.errors?.required && code.touched) || (code.errors?.required && globalparamForm.submitted)"
+                    class="text-danger">
+                    Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region description-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="description" class="control-label">Description *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.description" maxlength="4000"
+                    name="p_description" required [readonly]="model.is_editable === false"
+                    #description="ngModel"></textarea>
+                  <small
+                    *ngIf="(description.errors?.required && description.touched) || (description.errors?.required && globalparamForm.submitted)"
+                    class="text-danger">
+                    Description is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion description-->
+
+              <!--#region value-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="value" class="control-label">Value *</label>
+                  <input type="text" class="form-control" [ngModel]="model.value" maxlength="250" name="p_value"
+                    required [readonly]="model.is_editable === false" #value="ngModel">
+                  <small
+                    *ngIf="(value.errors?.required && value.touched) || (value.errors?.required && globalparamForm.submitted)"
+                    class="text-danger">
+                    Value is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion value-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region is_editable-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input disabled class="form-check-input" type="checkbox" [ngModel]="model.is_editable"
+                        name="p_is_editable"> Editable
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_editable-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

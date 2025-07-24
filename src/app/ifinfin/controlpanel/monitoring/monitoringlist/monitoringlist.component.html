@@ -1,0 +1,159 @@
+<router-outlet></router-outlet>
+
+
+<div id="hideMainPanel" class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header">
+          <h5 class="card-title">Task Integration Monitoring List</h5>
+        </div>
+        <div class="card-body">
+          <!--#region row-->
+          <div class="row">
+            <!--#region type-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Type</label>
+                <select class='form-control  col-md-4' name="p_type" [(ngModel)]="this.tampType"
+                  (change)="PageType($event)">
+                  <option value='ALL'>ALL</option>
+                  <option value='PULL'>PULL</option>
+                  <option value='IN'>IN</option>
+                </select>
+              </div>
+            </div>
+            <!--#endregion type-->
+          </div>
+          <!--#endregion row-->
+
+          <!--#region list view-->
+          <table id="datatableMonitoringList" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th style="display: none;"></th>
+                <th class="disabled-sorting">No</th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>SP Name</th>
+                <th>Status</th>
+                <th>Log Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of listmonitoring;  let i=index"
+                [ngStyle]="{'color': (row.status=='Error') ? 'red' : 'black'}">
+                <td style="display: none;"></td>
+                <td style="text-align: center;">{{listmonitoring.numberIndex+i+1}}</td>
+                <td class="if-no-edit-btn" style="width: 5%; text-align: center;">{{row.code}}</td>
+                <td style="width: 5%;text-align: center;">{{row.type}}</td>
+                <td style="width: 20%;text-align: left;">{{row.description}}</td>
+                <td style="width: 20%; text-align: left;">{{row.sp_name}}</td>
+                <td style="width: 10%; text-align: center;">{{row.status}}</td>
+                <td style="width: 40%; text-align: left;">{{row.log_description}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Source-->
+<div class="modal" id="lookupModalsource" style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <form>
+          <div class="col-md-12 buttons btn-lookup-margin">
+            <div class="card-body col-md-12">
+              <table id="datatableLookupSource" class="table table-striped table-bordered hover" cellspacing="0"
+                style="min-width: 100%;">
+                <thead>
+                  <tr>
+                    <th style="display: none;"></th>
+                    <th class="disabled-sorting">No</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of lookupSource;  let i=index">
+                    <td style="display: none;"></td>
+                    <td style="text-align: center;">{{lookupSource.numberIndex+i+1}}</td>
+                    <td style="text-align: center;width: 20%;">{{ row.code }}</td>
+                    <td style="text-align: left;width: 80%;">{{ row.module_name }}</td>
+                    <td class="text-center">
+                      <button class="btn btn-outline-default btn-round"
+                        (click)="btnSelectRowLookupSource(row.code, row.module_name)">Select</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Source-->
+
+<!--#region lookup Target-->
+<div class="modal" id="lookupModaltarget" style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <form>
+          <div class="col-md-12 buttons btn-lookup-margin">
+            <div class="card-body col-md-12">
+              <table id="datatableLookupTarget" class="table table-striped table-bordered hover" cellspacing="0"
+                style="min-width: 100%;">
+                <thead>
+                  <tr>
+                    <th style="display: none;"></th>
+                    <th class="disabled-sorting">No</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of lookupTarget;  let i=index">
+                    <td style="display: none;"></td>
+                    <td style="text-align: center;">{{lookupTarget.numberIndex+i+1}}</td>
+                    <td style="text-align: center;width: 20%;">{{ row.code }}</td>
+                    <td style="text-align: left;width: 80%;">{{ row.module_name }}</td>
+                    <td class="text-center">
+                      <button class="btn btn-outline-default btn-round"
+                        (click)="btnSelectRowLookupTarget(row.code, row.module_name)">Select</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Target-->

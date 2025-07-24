@@ -1,0 +1,142 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5>Agreement Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #agreementdetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(agreementdetailForm.value, agreementdetailForm.valid)">
+
+            <!--#region button back-->
+            <button [hidden]="model.job_status !== 'FAILED'" type="button" data-role="R00011750001176O"
+              class="btn btn-success btn-round" (click)="btnProceed(model.agreement_no)">Proceed</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region agreement_no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="agreement_external_no" class="control-label">Agreement No</label>
+                  <input type="text" class="form-control" [ngModel]="model.agreement_external_no" maxlength="50"
+                    name="p_agreement_external_no" readonly required #agreement_external_no="ngModel">
+                  <input type="hidden" class="form-control" [ngModel]="model.agreement_no" name="p_agreement_no">
+                  <small
+                    *ngIf="(agreement_external_no.errors?.required && agreement_external_no.touched) || (agreement_external_no.errors?.required && agreementdetailForm.submitted)"
+                    class="text-danger">
+                    Agreement No is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion agreement_no-->
+
+              <!--#region lookup Branch -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Branch</label>
+                  <input type="text" class="form-control" [ngModel]="model.branch_name" maxlength="250"
+                    name="p_branch_name" readonly>
+                </div>
+              </div>
+              <!--#endregion lookup Branch -->
+
+              <!--#region Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.agreement_status" maxlength="10"
+                    name="p_agreement_status" readonly>
+                </div>
+              </div>
+              <!--#endregion Status-->
+
+              <!--#region agreement_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Agreement Date </label>
+                  <input type="date" class="form-control datepicker col-md-6"
+                    [ngModel]="model.agreement_date | date:'y-MM-dd'" name="p_agreement_date" readonly>
+                </div>
+              </div>
+              <!--#endregion agreement_date-->
+
+              <!--#region client_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Client Name</label>
+                  <input id="client_name" type="text" class="form-control" [ngModel]="model.client_name"
+                    name="p_client_name" readonly>
+                </div>
+              </div>
+              <!--#endregion client_name-->
+
+              <!--#region termination_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Termination Date </label>
+                  <input type="date" class="form-control datepicker col-md-6"
+                    [ngModel]="model.termination_date | date:'y-MM-dd'" name="p_termination_date" readonly>
+                </div>
+              </div>
+              <!--#endregion termination_date-->
+
+              <!--#region termination_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Termination Status</label>
+                  <input type="text" class="form-control" maxlength="20" [ngModel]="model.termination_status"
+                    name="p_termination_status" readonly>
+                </div>
+              </div>
+              <!--#endregion termination_status-->
+            </div>
+            <!--#endregion row-->
+            <!--#region row-->
+            <div class="row">
+              <!--#region job_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Job Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.job_status" maxlength="10"
+                    name="p_job_status" readonly>
+                </div>
+              </div>
+              <!--#endregion job_status-->
+
+              <!--#region failed_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Failed Remark </label>
+                  <textarea type="text" class="form-control" [ngModel]="model.failed_remarks" maxlength="4000"
+                    name="p_failed_remarks" readonly>
+                  </textarea>
+                </div>
+              </div>
+              <!--#endregion failed_remarks-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+          <div class="card-footer ">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

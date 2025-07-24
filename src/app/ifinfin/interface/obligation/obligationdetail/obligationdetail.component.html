@@ -1,0 +1,163 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Obligation Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #obligationdetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(obligationdetailForm.value, obligationdetailForm.valid)">
+
+            <!--#region button back-->
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <input type="text" [ngModel]="model.code" maxlength="50" name="p_id" hidden>
+              <!--#endregion code-->
+
+              <!--#region Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Obigation No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code" readonly>
+                </div>
+              </div>
+              <!--#endregion Code-->
+
+              <!--#region agreement no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Agreement No </label>
+                  <input type="text" class="form-control" [ngModel]="model.agreement_external_no"
+                    name="p_agreement_external_no" readonly>
+                </div>
+              </div>
+              <!--#endregion agreement no-->
+
+              <!--#region client_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Client Name</label>
+                  <input type="text" class="form-control" [ngModel]="model.client_name" name="p_client_name" readonly>
+                </div>
+              </div>
+              <!--#endregion client_name-->
+
+              <!--#region installment_no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Installment No </label>
+                  <input type="text" class="form-control" [ngModel]="model.installment_no" name="p_installment_no"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion installment_no-->
+
+              <!--#region obligation_type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Obigation Type</label>
+                  <input type="text" class="form-control" [ngModel]="model.obligation_type" maxlength="15"
+                    name="p_obligation_type" readonly>
+                </div>
+              </div>
+              <!--#endregion obligation_type-->
+
+              <!--#region payment_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Payment Date </label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.payment_date" name="p_payment_date" [options]="myDatePickerOptions"
+                    #p_payment_date="ngModel" #payment_date="angular-mydatepicker" autocomplete="off" readonly />
+                </div>
+              </div>
+              <!--#endregion payment_date-->
+
+              <!--#region value_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Value Date </label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.value_date" name="p_value_date" [options]="myDatePickerOptions"
+                    #p_value_date="ngModel" #value_date="angular-mydatepicker" autocomplete="off" readonly />
+                </div>
+              </div>
+              <!--#endregion value_date-->
+
+              <!--#region payment_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_remarks" class="control-label">Transaction Name</label>
+                  <textarea type="text" [disabled]="param == null" class="form-control" maxlength="250"
+                    [ngModel]="model.payment_remarks" readonly name="p_payment_remarks"></textarea>
+                </div>
+              </div>
+              <!--#endregion payment_remarks-->
+            </div>
+            <!--#endregion  row-->
+
+            <span layout="row horizontal-divider">
+              <hr flex />
+            </span>
+            <br>
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region payment_source_no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="payment_source_no" class="control-label">Payment Source No</label>
+                  <input type="text" [disabled]="param == null" class="form-control" maxlength="50"
+                    [ngModel]="model.payment_source_no" readonly name="p_payment_source_no">
+                </div>
+              </div>
+              <!--#endregion payment_source_no-->
+
+              <!--#region payment_source_type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Source Type</label>
+                  <input type="text" class="form-control col-md-4" maxlength="3" [ngModel]="model.payment_source_type"
+                    name="p_payment_source_type" readonly>
+                </div>
+              </div>
+              <!--#endregion payment_source_type-->
+
+              <!--#region payment_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Payment Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.payment_amount | number : '1.2-2'" name="p_payment_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion payment_amount-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,341 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Open Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #cashieropendetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(cashieropendetailForm.value, cashieropendetailForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" [hidden]="isButton"
+              data-role="R00003160002317C">Save</button>
+            <button type="button" class="btn btn-success btn-round" data-role="R00003160000317O"
+              [hidden]="isButton || model.is_open === '1' || param == null" (click)="btnProceed()">Proceed</button>
+            <button type="button" class="btn btn-success btn-round" data-role="R00003160002317O"
+              [hidden]="isButton || model.is_open === '0' || param == null" (click)="btnOpen()">Open</button>
+            <button type="button" class="btn btn-success btn-round" [hidden]="model.cashier_status !== 'OPEN'"
+              data-role="R00003160003317O" (click)="btnClose()">Close</button>
+            <button type="button" class="btn btn-warning btn-round" data-role="R00003160000317R"
+              [hidden]="isButton || param == null" (click)="btnCancel()">Cancel</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <button type="button" style='float: right;' class="btn btn-info btn-round"
+              [hidden]="model.code == null || model.cashier_status === 'HOLD' || model.cashier_status === 'CANCEL'"
+              (click)="btnPrint(model.code,model.rpt_code,model.report_name)" data-role="R00003160001317P">
+              Print
+            </button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Open No</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Open No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupSysBranch()" data-toggle="modal"
+                        data-target="#lookupModalSysBranch" href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_code" name="p_branch_code">
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_name" name="p_branch_name"
+                        required #branch_name="ngModel">
+                    </span>
+                  </div>
+                  <small [hidden]="branch_name.valid || (branch_name.pristine && !cashieropendetailForm.submitted)"
+                    class="text-danger">
+                    Branch is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region  Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.cashier_status" maxlength="10"
+                    name="p_cashier_status" readonly>
+                </div>
+              </div>
+              <!--#endregion  Status-->
+
+              <!--#region  cashier_open_date -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_open_date" class="control-label">Date *</label>
+                  <input [ngStyle]="getStyles(isButton)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.cashier_open_date" name="p_cashier_open_date"
+                    [options]="myDatePickerOptions" (click)="cashier_open_date.toggleCalendar()" required
+                    #p_cashier_open_date="ngModel" #cashier_open_date="angular-mydatepicker" autocomplete="off"
+                    [readonly]="isButton" />
+                  <small
+                    *ngIf="(p_cashier_open_date.errors?.required && p_cashier_open_date.touched) || (p_cashier_open_date.errors?.required && cashieropendetailForm.submitted)"
+                    class="text-danger">
+                    Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion cashier_open_date -->
+
+              <!--#region Employee Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Employee *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupSysEmployee()" data-target="#lookupModalSysEmployee"
+                        data-toggle="modal" href="#"> <i class="fa fa-search-plus"></i></button> {{model.employee_name}}
+                      <input type="hidden" name="p_employee_name" [ngModel]="model.employee_name" required
+                        #employee_name="ngModel" />
+                      <input type="hidden" name="p_employee_code" [ngModel]="model.employee_code" />
+                    </span>
+                  </div>
+                  <small [hidden]="employee_name.valid || (employee_name.pristine && !cashieropendetailForm.submitted)"
+                    class="text-danger">
+                    Employee is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Employee Code-->
+
+              <!--#region  cashier_close_date -->
+              <!-- <div class="col-md-4">
+                <div class="form-group">
+                  <label>Close Date</label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.cashier_close_date" name="p_cashier_close_date" [options]="myDatePickerOptions"
+                    #p_cashier_close_date="ngModel" #cashier_close_date="angular-mydatepicker" autocomplete="off"
+                    readonly />
+                </div>
+              </div> -->
+              <!--#endregion cashier_close_date -->
+
+              <!--#region  cashier_close_date -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_close_date" class="control-label">Close Date</label>
+                  <input [ngStyle]="getStyles(true)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.cashier_close_date" name="p_cashier_close_date"
+                    [options]="myDatePickerOptions" (click)="cashier_close_date.toggleCalendar()" readonly
+                    #p_cashier_close_date="ngModel" #cashier_close_date="angular-mydatepicker" autocomplete="off" />
+                </div>
+              </div>
+              <!--#endregion cashier_close_date -->
+
+              <!--#region cashier_innitial_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_innitial_amount" class="control-label">Initial Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_innitial_amount | number : '1.2-2'" name="p_cashier_innitial_amount"
+                    #cashier_innitial_amount="ngModel" maxlength="24" amount="cashier_innitial_amount" readonly>
+                  <!--[readonly]="isButton"-->
+                  <!-- <small
+                    *ngIf="(cashier_innitial_amount.errors?.required && cashier_innitial_amount.touched) || (cashier_innitial_amount.errors?.required && cashieropendetailForm.submitted)"
+                    class="text-danger">
+                    Initial Amount is required
+                  </small> -->
+                </div>
+              </div>
+              <!--#endregion cashier_innitial_amount-->
+
+              <!--#region cashier_open_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_open_amount" class="control-label">Open Amount </label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_open_amount | number : '1.2-2'" name="p_cashier_open_amount" maxlength="24"
+                    amount="cashier_open_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion cashier_open_amount-->
+
+              <!--#region cashier_close_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Close Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_close_amount | number : '1.2-2'" maxlength="24"
+                    amount="cashier_close_amount" name="p_cashier_close_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion cashier_close_amount-->
+
+              <!--#region cashier_db_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Debit Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_db_amount | number : '1.2-2'" name="p_cashier_db_amount" maxlength="24"
+                    amount="cashier_db_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion cashier_db_amount-->
+
+              <!--#region cashier_cr_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Credit Amount</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_cr_amount | number : '1.2-2'" name="p_cashier_cr_amount" maxlength="24"
+                    amount="cashier_cr_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion cashier_cr_amount-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion readonly-->
+        </div>
+        <!--#region wizard-->
+        <div class="wizard-custom-margin" [hidden]="param == null">
+          <!--#region wizard container -->
+          <div class="wizard-container">
+            <div class="card-wizard" style="opacity: 1 !important; min-height: 0px;" data-color="primary"
+              id="wizardProfile">
+              <div class="text-center">
+                <div class="wizard-navigation">
+                  <ul>
+                    <li class="nav-item">
+                      <a class="nav-link" (click)="cashierreceiptallocatedwiz()" href="#cashierreceiptallocatedlist"
+                        data-toggle="tab" role="tab" aria-controls="cashierreceiptallocatedlist" aria-selected="true">
+                        Receipt
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" (click)="cashierbanknoteandcoinwiz()" href="#cashierbanknoteandcoinlist"
+                        data-toggle="tab" role="tab" aria-controls="cashierbanknoteandcoinlist" aria-selected="true">
+                        Bank Note and Coin
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--endregion wizard-->
+        <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSysBranch"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupSysBranch" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbranch;let i=index ">
+                  <td style="text-align: center;">{{lookupbranch.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBranch(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Branch-->
+
+<!--#region lookup Employee-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSysEmployee"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupSysEmployee" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupemployee;let i=index ">
+                  <td style="text-align: center;">{{lookupemployee.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowSysEmployee(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Employee-->

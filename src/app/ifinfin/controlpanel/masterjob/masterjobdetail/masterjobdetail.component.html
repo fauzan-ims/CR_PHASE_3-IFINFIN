@@ -1,0 +1,227 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5>Job Tasklist Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #jobtasklistForm="ngForm" (ngSubmit)="onFormSubmit(jobtasklistForm.value, jobtasklistForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00022980000003C">Save</button>
+            <button [hidden]="this.param === null" class="btn btn-success btn-round col-md-4" type="button"
+              data-role="R00022980000004U" (click)="btnActive(model.code)">
+              <span [hidden]="model.is_active === true">Active</span>
+              <span [hidden]="model.is_active === false">Inactive</span>
+            </button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4" hidden>
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Code</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Code </label>
+                  <input type="text" class="form-control" placeholder="Enter Code" [ngModel]="model.code" name="p_code"
+                    [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class='form-control col-md-6' name="p_type" [ngModel]="model.type" [disabled]="isReadOnly">
+                    <option value='PULL'>PULL</option>
+                    <option value='IN'>IN</option>
+                    <option value='EOD'>EOD</option>
+                  </select>
+                </div>
+              </div>
+              <!--#endregion type-->
+
+              <!--#region description-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="description" class="control-label">Description *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.description" maxlength="250"
+                    name="p_description" required #description="ngModel"></textarea>
+                  <small
+                    *ngIf="(description.errors?.required && description.touched) || (description.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    Description is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion description-->
+
+              <!--#region is_active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input disabled class="form-check-input" type="checkbox" [ngModel]="model.is_active"
+                        name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_active-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region SP Name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="sp_name" class="control-label">SP Name *</label>
+                  <input type="text" class="form-control" maxlength="50" [ngModel]="model.sp_name" name="p_sp_name"
+                    required #sp_name="ngModel">
+                  <small
+                    *ngIf="(sp_name.errors?.required && sp_name.touched) || (sp_name.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    SP Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion SP Name-->
+
+              <!--#region oder no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="order_no" class="control-label">Order No *</label>
+                  <input type="text" class="form-control col-md-2" [ngModel]="model.order_no" name="p_order_no" required
+                    #order_no="ngModel" pattern="{{NumberOnlyPattern}}">
+                  <small
+                    *ngIf="(order_no.errors?.required && order_no.touched) || (order_no.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    Order No is required
+                  </small>
+                  <small *ngIf="order_no.errors?.pattern && order_no.touched" class="text-danger">
+                    Order No is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion oder no-->
+
+              <!--#region row_to_process-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="row_to_process" class="control-label">Row To Process *</label>
+                  <input type="text" class="form-control col-md-2" [ngModel]="model.row_to_process"
+                    name="p_row_to_process" required #row_to_process="ngModel" pattern="{{NumberOnlyPattern}}">
+                  <small
+                    *ngIf="(row_to_process.errors?.required && row_to_process.touched) || (row_to_process.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    Row To Process is required
+                  </small>
+                  <small *ngIf="row_to_process.errors?.pattern && row_to_process.touched" class="text-danger">
+                    Row To Process is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion row_to_process-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row" hidden>
+
+              <!--#region EOD Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="eod_status" class="control-label">EOD Status *</label>
+                  <input type="text" class="form-control" maxlength="10" [ngModel]="model.eod_status"
+                    name="p_eod_status" #eod_status="ngModel">
+                  <small
+                    *ngIf="(eod_status.errors?.required && eod_status.touched) || (eod_status.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    EOD Status is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion EOD Status-->
+
+              <!--#region Row to Process-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="row_to_process" class="control-label">Row to Process *</label>
+                  <input type="text" class="form-control col-md-2" [ngModel]="model.row_to_process"
+                    name="p_row_to_process" #row_to_process="ngModel" pattern="{{NumberOnlyPattern}}">
+                  <small
+                    *ngIf="(row_to_process.errors?.required && row_to_process.touched) || (row_to_process.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    Row to Process is required
+                  </small>
+                  <small *ngIf="row_to_process.errors?.pattern && row_to_process.touched" class="text-danger">
+                    Row to Process is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Row to Process-->
+
+              <!--#region Last ID-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="last_id" class="control-label">Last ID *</label>
+                  <input type="text" class="form-control col-md-2" [ngModel]="model.last_id" name="p_last_id"
+                    #last_id="ngModel" pattern="{{NumberOnlyPattern}}">
+                  <small
+                    *ngIf="(last_id.errors?.required && last_id.touched) || (last_id.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    Last ID is required
+                  </small>
+                  <small *ngIf="last_id.errors?.pattern && last_id.touched" class="text-danger">
+                    Last ID is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Last ID-->
+
+              <!--#region eod_remark-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="eod_remark" class="control-label">Remark *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.eod_remark" maxlength="250"
+                    name="p_eod_remark" #eod_remark="ngModel"></textarea>
+                  <small
+                    *ngIf="(eod_remark.errors?.required && eod_remark.touched) || (eod_remark.errors?.required && jobtasklistForm.submitted)"
+                    class="text-danger">
+                    eod_remark is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion eod_remark-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

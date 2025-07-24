@@ -1,0 +1,57 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--#region watermark-->
+                <div class="watermark" hidden>
+                    <h6>{{this.companyName}}</h6>
+                    <h6>{{this.userName}}</h6>
+                    <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+                </div>
+                <!--#endregion watermark-->
+                <div class="card-header">
+                    <h5 class="card-title">System Error Log List</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input class="form-control col-md-4" placeholder="dd/mm/yyyy" angular-mydatepicker [ngModel]="model.from_date"
+                                name="p_from_date" [options]="myDatePickerOptions" (click)="from_date.toggleCalendar()"
+                                #p_from_date="ngModel" #from_date="angular-mydatepicker" autocomplete="off"
+                                (dateChanged)="FromDate($event)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!--#region list view-->
+                    <table id="datatableControlPanelSysErrorLogList" datatable [dtOptions]="dtOptions"
+                        class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="disabled-sorting">No</th>
+                                <th style="display: none;"></th>
+                                <th>SP Name</th>
+                                <th>Log Date</th>
+                                <th class="disabled-sorting">Parameter</th>
+                                <th class="disabled-sorting">Error</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of listsyserrorlog; let i=index">
+                                <td style="text-align: center;">{{listsyserrorlog.numberIndex+i+1}}</td>
+                                <td style="display: none;"></td>
+                                <td style="text-align: left; width: 20%;">{{row.sp_name}}</td>
+                                <td style="text-align: left; width: 15%;">{{row.log_date}}</td>
+                                <td style="text-align: left; width: 45%;">{{row.parameter}}
+                                </td>
+                                <td style="width: 20%;">{{row.error}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!--#endregion list view-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

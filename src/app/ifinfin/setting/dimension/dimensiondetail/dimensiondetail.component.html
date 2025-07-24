@@ -1,0 +1,222 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+
+        <div class="card-header ">
+          <h4 class="card-title">Dimension Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #dimensionForm="ngForm" (ngSubmit)="onFormSubmit(dimensionForm.value, dimensionForm.valid)">
+            <!--#region button submit dan back-->
+            <button type="save" class="btn btn-info btn-round" data-role="R00024220000003C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code -->
+              <input type="text" [ngModel]="model.code" maxlength="50" name="p_code" hidden>
+              <!--#endregion code -->
+
+              <!--#region description-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="description" class="control-label">Description *</label>
+                  <textarea type="text" class="form-control" maxlength="250" [ngModel]="model.description" required
+                    #description="ngModel" name="p_description"></textarea>
+                  <small
+                    *ngIf="description.errors?.required && description.touched || (description.errors?.required && dimensionForm.submitted) "
+                    class="text-danger">
+                    Description is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion description-->
+
+              <!--#region type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Type </label>
+                  <select [disabled]="param !== null" class='form-control col-md-6' [(ngModel)]="model.type"
+                    name="p_type" (change)="PageType($event)">
+                    <option value="TABLE">TABLE</option>
+                    <option value="FUNCTION">FUNCTION</option>
+                  </select>
+                </div>
+              </div>
+              <!--#endregion type-->
+
+              <!--#region is_active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_active-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region table_name-->
+              <div class="col-md-4" [hidden]="model.type === 'FUNCTION'">
+                <div class="form-group">
+                  <label for="table_name" class="control-label">Table Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.table_name" maxlength="50"
+                    name="p_table_name" [disabled]="model.type === 'FUNCTION'" required #table_name="ngModel">
+                  <small
+                    *ngIf="table_name.errors?.required && table_name.touched || (table_name.errors?.required && dimensionForm.submitted) "
+                    class="text-danger">
+                    Table Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion table_name-->
+
+              <!--#region column_name-->
+              <div class="col-md-4" [hidden]="model.type === 'FUNCTION'">
+                <div class="form-group">
+                  <label for="column_name" class="control-label">Column Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.column_name" maxlength="50"
+                    name="p_column_name" [disabled]="model.type === 'FUNCTION'" required #column_name="ngModel">
+                  <small
+                    *ngIf="column_name.errors?.required && column_name.touched || (column_name.errors?.required && dimensionForm.submitted) "
+                    class="text-danger">
+                    Column Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion column_name-->
+
+              <!--#region primary_column-->
+              <div class="col-md-4" [hidden]="model.type === 'FUNCTION'">
+                <div class="form-group">
+                  <label for="primary_column" class="control-label">Primary Column Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.primary_column" maxlength="50"
+                    name="p_primary_column" [disabled]="model.type === 'FUNCTION'" required #primary_column="ngModel">
+                  <small
+                    *ngIf="primary_column.errors?.required && primary_column.touched || (primary_column.errors?.required && dimensionForm.submitted) "
+                    class="text-danger">
+                    Primary Column Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion primary_column-->
+
+              <!--#region function_name-->
+              <div class="col-md-4" [hidden]="model.type === 'TABLE'">
+                <div class="form-group">
+                  <label for="function_name" class="control-label">Function Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.function_name" maxlength="250"
+                    name="p_function_name" [disabled]="model.type === 'TABLE'" required #function_name="ngModel">
+                  <small
+                    *ngIf="function_name.errors?.required && function_name.touched || (function_name.errors?.required && dimensionForm.submitted) "
+                    class="text-danger">
+                    Function Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion function_name-->
+            </div>
+            <!--#endregion row-->
+
+          </form>
+          <!--#end region form-->
+        </div>
+
+        <div *ngIf="param != null">
+          <!--#region list view-->
+          <span layout="row horizontal-divider">
+            <hr flex />
+          </span>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card-header">
+                <h4 class="card-title">Dimension Value List</h4>
+              </div>
+              <div class="card-body">
+                <div class="toolbar">
+                  <!--#region button add, delete-->
+                  <button class="btn btn-info btn-round" (click)="btnAdd()" data-role="R00024220000004C">
+                    Add
+                  </button>
+                  <button class="btn btn-danger btn-round" type="button" (click)="btnDeleteAll()"
+                    data-role="R00024220000005D">
+                    Delete
+                  </button>
+                  <!--#endregion button delete, delete-->
+                </div>
+
+                <!--#region list view-->
+                <table id="datatableDimensionDetail" datatable [dtOptions]="dtOptions"
+                  class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                  <thead>
+                    <tr>
+                      <th class="disabled-sorting">No</th>
+                      <th class="disabled-sorting">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="checkall" [(ngModel)]="selectedAll"
+                              (change)="selectAllTable();" />
+                            <span class="form-check-sign"></span>
+                          </label>
+                        </div>
+                      </th>
+                      <th>Description</th>
+                      <th>Value</th>
+                      <th style="text-align: center;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of listdimension;let i=index ">
+                      <td class="if-no-edit-btn" style="text-align: center;">{{listdimension.numberIndex+i+1}}</td>
+                      <td class="disabled-sorting if-no-edit-btn">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="row.selected"
+                              (change)="checkIfAllTableSelected($event, row.code);">
+                            <span class="form-check-sign"></span>
+                          </label>
+                        </div>
+                      </td>
+                      <td style="width: 70%; text-align: left;">{{row.description}}</td>
+                      <td style="width: 30%; text-align: left;">{{row.value}}</td>
+                      <td style="text-align: center;">
+                        <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit"
+                          (click)="btnEdit(row.code)"><i class="fa fa-edit"></i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!--#endregion list view-->
+              </div>
+            </div>
+          </div>
+          <!--#endregion list view-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

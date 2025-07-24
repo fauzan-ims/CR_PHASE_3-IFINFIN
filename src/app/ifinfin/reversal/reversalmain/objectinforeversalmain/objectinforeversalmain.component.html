@@ -1,0 +1,104 @@
+<div class="main-content">
+    <!-- spinner region -->
+    <div class="panel-container-spinner" *ngIf="showSpinner">
+        <app-spinner class="spinner-container"></app-spinner>
+    </div>
+    <!-- end spinner region -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ">
+                <!--#region watermark-->
+                <div class="watermark" hidden>
+                    <h6>{{this.companyName}}</h6>
+                    <h6>{{this.userName}}</h6>
+                    <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+                </div>
+                <!--#endregion watermark-->
+                <div class="card-header ">
+                    <h5 class="card-title">Reversal Info</h5>
+                </div>
+                <div class="card-body ">
+
+                    <!--#region row-->
+                    <div class="row">
+                        <!--#region code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Reversal No</label>
+                                <input type="text" class="form-control" [ngModel]="model.code" maxlength="50"
+                                    name="p_code" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion code-->
+
+                        <!--#region Branch Code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Branch</label>
+                                <input type="text" class="form-control" [ngModel]="model.branch_name" maxlength="250"
+                                    name="p_branch_name" readonly>
+                                <input type="hidden" class="form-control" [ngModel]="model.branch_code"
+                                    name="p_branch_code">
+                            </div>
+                        </div>
+
+                        <!--#region  Status-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" class="form-control" [ngModel]="model.reversal_status" maxlength="10"
+                                    name="p_reversal_status" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion  Status-->
+
+                        <!--#region  reversal_date -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reversal_date" class="control-label">Date </label>
+                                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.reversal_date" name="p_reversal_date"
+                                    [options]="myDatePickerOptions" required #p_reversal_date="ngModel"
+                                    #reversal_date="angular-mydatepicker" autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion reversal_date -->
+
+                        <!--#region source_reff_name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Source Name</label>
+                                <input type="text" class="form-control" [ngModel]="model.source_reff_name"
+                                    maxlength="250" name="p_source_reff_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion source_reff_name-->
+
+                        <!--#region source-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Source No</label>
+                                <input type="text" class="form-control" [ngModel]="model.source_reff_code"
+                                    maxlength="50" name="p_source_reff_code" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion source-->
+
+                        <!--#region reversal_remarks-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reversal_remarks" class="control-label">Remark </label>
+                                <textarea type="text" class="form-control" maxlength="4000"
+                                    [ngModel]="model.reversal_remarks" name="p_reversal_remarks" readonly></textarea>
+                            </div>
+                        </div>
+                        <!--#endregion reversal_remarks-->
+                    </div>
+                    <!--#endregion  row-->
+                </div>
+                <div class="card-footer ">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

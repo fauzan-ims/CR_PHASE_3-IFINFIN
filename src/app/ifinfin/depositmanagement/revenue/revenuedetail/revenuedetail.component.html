@@ -1,0 +1,411 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Revenue Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #revenuedetailForm="ngForm" (ngSubmit)="onFormSubmit(revenuedetailForm.value, revenuedetailForm.valid)">
+
+            <!--#region button save, post, cancel dan back-->
+            <button type="submit" class="btn btn-info btn-round" [hidden]="isButton"
+              data-role="R00003290002330C">Save</button>
+            <button type="button" class="btn btn-success btn-round" [hidden]="isButton || param == null"
+              data-role="R00003290000330O" (click)="btnPaid()">Post</button>
+            <!-- <button type="button" class="btn btn-warning btn-round" data-role="R00003290002330O"
+              [hidden]="model.revenue_status !== 'PAID' || param == null" (click)="btnReversal()">Reversal</button> -->
+            <button type="button" class="btn btn-warning btn-round" [hidden]="isButton || param == null"
+              data-role="R00003290000330R" (click)="btnCancel()">Cancel</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button save, post, cancel dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Revenue No</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Revenue No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupSysBranch()" data-toggle="modal"
+                        data-target="#lookupModalSysBranch" href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_name}}
+                    </span>
+                    <input type="text" [ngModel]="model.branch_name" maxlength="250" name="p_branch_name" hidden
+                      required #branch_name="ngModel">
+                    <input type="text" [ngModel]="model.branch_code" maxlength="50" name="p_branch_code" hidden>
+                  </div>
+                  <small [hidden]="branch_name.valid || (branch_name.pristine && !revenuedetailForm.submitted)"
+                    class="text-danger">
+                    Branch is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region  Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input readonly type="text" class="form-control" [ngModel]="model.revenue_status"
+                    name="p_revenue_status">
+                </div>
+              </div>
+              <!--#endregion  Status-->
+
+              <!--#region revenue_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="revenue_date" class="control-label">Date *</label>
+                  <input [ngStyle]="getStyles(isButton)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.revenue_date" name="p_revenue_date"
+                    [options]="myDatePickerOptions" (click)="revenue_date.toggleCalendar()" required
+                    #p_revenue_date="ngModel" #revenue_date="angular-mydatepicker" autocomplete="off"
+                    [readonly]="isButton" (dateChanged)="valueDate($event)" />
+                  <small
+                    *ngIf="(p_revenue_date.errors?.required && p_revenue_date.touched) || (p_revenue_date.errors?.required && revenuedetailForm.submitted)"
+                    class="text-danger">
+                    Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion revenue_date -->
+
+              <!--#region agreement no-->
+              <div class="col-md-4">
+                <!--#region row-->
+                <div class="row">
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label>Agreement No *</label>
+                      <div class="col-md-12 buttons btn-lookup-margin">
+                        <span>
+                          <button [disabled]="isButton || isCount"
+                            class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                            (click)="btnLookupAgreement()" data-toggle="modal" data-target="#lookupModalAgreement"
+                            href="#"><i class="fa fa-search-plus"></i></button>
+                          {{model.agreement_external_no}}
+                          <input type="hidden" class="form-control" [ngModel]="model.agreement_no" name="p_agreement_no"
+                            required #agreement_no="ngModel">
+                        </span>
+                      </div>
+                      <small [hidden]="agreement_no.valid || (agreement_no.pristine && !revenuedetailForm.submitted)"
+                        class="text-danger">
+                        Agreement No is required
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Currency</label>
+                      <input readonly type="text" class="form-control" [ngModel]="model.currency_code"
+                        name="p_currency_code">
+                      <input type="hidden" class="form-control" [ngModel]="model.exch_rate" name="p_exch_rate">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion agreement no-->
+
+              <!--#region client name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Client Name</label>
+                  <input type="text" class="form-control" [ngModel]="model.client_name" name="p_client_name" readonly>
+                </div>
+              </div>
+              <!--#endregion client name-->
+
+              <!--#region revenue_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="revenue_amount" class="control-label">Amount </label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.revenue_amount | number : '1.2-2'" name="p_revenue_amount" maxlength="24"
+                    amount="revenue_amount" readonly>
+                </div>
+              </div>
+              <!--#endregion revenue_amount-->
+
+              <!--#region revenue_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="revenue_remarks" class="control-label">Remark *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.revenue_remarks" maxlength="4000"
+                    name="p_revenue_remarks" required #revenue_remarks="ngModel" [readonly]="isButton"></textarea>
+                  <small
+                    *ngIf="(revenue_remarks.errors?.required && revenue_remarks.touched) || (revenue_remarks.errors?.required && revenuedetailForm.submitted)"
+                    class="text-danger">
+                    Remark is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion revenue_remarks-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion readonly-->
+        </div>
+
+        <div *ngIf="param != null">
+          <span layout="row horizontal-divider">
+            <hr flex />
+          </span>
+          <div class="row">
+            <div class="col-md-12 buttons btn-lookup-margin">
+              <div class="card-header">
+                <h5 class="card-title">Deposit List </h5>
+              </div>
+              <div class="card-body">
+                <div class="toolbar" [hidden]="isButton">
+                  <!--#region button add, delete-->
+                  <button class="btn btn-info btn-round" (click)="btnSaveList()" data-role="R00003290003330C">
+                    Save
+                  </button>
+                  <button class="btn btn-info btn-round" type="button" (click)="btnLookupDepositMain()"
+                    data-role="R00003290004330C" data-target="#lookupModalDepositMain" data-toggle="modal" href="#">
+                    Add </button>
+                  <button class="btn btn-danger btn-round" (click)="btnDeleteAll()" data-role="R00003290000330D"
+                    id="button">
+                    Delete
+                  </button>
+                  <!--#endregion button add, delete-->
+                </div>
+                <!--#region list view-->
+                <table id="datatableRevenueDetail" datatable [dtOptions]="dtOptions"
+                  class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                  <thead>
+                    <tr>
+                      <th class="disabled-sorting">No</th>
+                      <th class="disabled-sorting">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="checkalltable"
+                              [(ngModel)]="selectedAllTable" (change)="selectAllTable();" />
+                            <span class="form-check-sign"></span>
+                          </label>
+                        </div>
+                      </th>
+                      <th>Deposit Type</th>
+                      <th>Deposit Amount</th>
+                      <th>revenue Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of listrevenuedetail; let i = index">
+                      <td style="text-align: center;">{{listrevenuedetail.numberIndex+i+1}}</td>
+                      <td class="disabled-sorting">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="row.selectedTable"
+                              (change)="checkIfAllTableSelected($event, row.id);">
+                            <span class="form-check-sign"></span>
+                          </label>
+                        </div>
+                      </td>
+                      <td style="width: 60%;">{{row.deposit_type}}</td>
+                      <td style="width: 20%;text-align: right;">{{row.deposit_amount | number : '1.2-2'}}</td>
+                      <td style="width: 20%;text-align: right;" class="if-no-edit-btn">
+                        <div class="form-group">
+                          <input type="hidden" value="{{row.id}}" name="p_id">
+                          <input type="hidden" value="{{row.deposit_amount}}" name="p_deposit_amount">
+                          <input id="revenue_amountt{{i}}" (blur)="onBlur($event,i,'amount')"
+                            (focus)="onFocus($event,i,'amount')" class="text-right" type="text"
+                            value="{{row.revenue_amount | number : '1.2-2'}}" amount="revenue_amountt"
+                            name="p_revenue_amountt" [disabled]="isButton">
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!--#endregion list view-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSysBranch"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupSysBranch" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbranch;let i=index ">
+                  <td style="text-align: center;">{{lookupbranch.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td style="width: 30%; text-align: center;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowSysBranch(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Branch-->
+
+<!--#region lookup agreement-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalAgreement"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupAgreement" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Agreement No</th>
+                  <th>Installment Amount</th>
+                  <th>Asset</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupagreement;let i=index ">
+                  <td style="text-align: center;">{{lookupagreement.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td style="width: 30%;">{{ row.agreement_external_no }} <br> {{ row.client_name }}</td>
+                  <td class="text-right" style="width: 20%;">{{ row.installment_amount | number : '1.2-2' }} <br> {{
+                    row.currency_code }} </td>
+                  <td style="width: 50%;">{{ row.asset_description }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowAgreement(row.agreement_no, row.agreement_external_no, row.client_name, row.currency_code)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup agreement-->
+
+<!--#region lookup Deposit main-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalDepositMain"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <!--#region button add-->
+          <button class="btn btn-info btn-round" (click)="btnSelectAllLookup()" data-role="R00003290004330C"
+            id="button" [disabled]="this.isLookupAdd">
+            add
+          </button>
+          <!--#endregion button add--->
+          <div class="card-body col-md-12">
+            <table id="datatableLookupDepositMain" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th class="disabled-sorting">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="checkallLookup"
+                          [(ngModel)]="selectedAllLookup" (change)="selectAllLookup();" />
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </th>
+                  <th>Deposit Type</th>
+                  <th>Currency</th>
+                  <th>Amount </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupdepositmain;let i=index ">
+                  <td style="text-align: center;">{{lookupdepositmain.numberIndex+i+1}}</td>
+                  <td class="disabled-sorting">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="row.selectedLookup"
+                          (change)="checkIfAllLookup($event, row.code, row.deposit_type, row.deposit_amount);">
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </td>
+                  <td style="width: 35%;text-align: center;">{{ row.deposit_type }}</td>
+                  <td style="width: 30%;text-align: center;">{{ row.deposit_currency_code }}</td>
+                  <td style="width: 35%;text-align: right;" class="if-no-edit-btn">
+                    {{ row.deposit_amount | number : '1.2-2'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Deposit-->

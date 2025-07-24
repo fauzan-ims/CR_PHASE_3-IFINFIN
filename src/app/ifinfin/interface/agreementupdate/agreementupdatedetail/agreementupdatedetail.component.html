@@ -1,0 +1,131 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h4 class="card-title">Agreement Update List (Interface)</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #agreementupdatedetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(agreementupdatedetailForm.value, agreementupdatedetailForm.valid)">
+
+            <!--#region button back-->
+            <button [hidden]="model.job_status !== 'FAILED'" type="button" data-role="R00011780001179O"
+              class="btn btn-success btn-round" (click)="btnProceed(model.agreement_no)">Proceed</button>
+
+            <!-- <button type="button" style='float: right;' class="btn btn-info btn-round"
+              (click)="btnPrint(model.agreement_no)" data-role="R00011780011179P">
+              Print
+            </button> -->
+
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region agreement_external_no-->
+
+              <input type="text" class="form-control" [ngModel]="model.agreement_no" maxlength="50"
+              name="p_agreement_no" hidden>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Agreement No </label>
+                  <input type="text" class="form-control" [ngModel]="model.agreement_external_no" maxlength="50"
+                    name="p_agreement_external_no" readonly>
+                </div>
+              </div>
+              <!--#endregion agreement_external_no-->
+
+              <!--#region agreement_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.agreement_status" maxlength="10"
+                    name="p_agreement_status" readonly>
+                </div>
+              </div>
+              <!--#endregion agreement_status-->
+
+              <!--#region agreement_sub_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Sub Status</label>
+                  <input type="text" class="form-control" maxlength="10" [ngModel]="model.agreement_sub_status"
+                    name="p_agreement_sub_status" readonly>
+                </div>
+              </div>
+              <!--#endregion agreement_sub_status-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region termination_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Termination Date </label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.termination_date" name="p_termination_date" [options]="myDatePickerOptions"
+                    #p_termination_date="ngModel" readonly #termination_date="angular-mydatepicker"
+                    autocomplete="off" />
+                </div>
+              </div>
+              <!--#endregion termination_date-->
+
+              <!--#region termination_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Termination Status</label>
+                  <input type="text" class="form-control" maxlength="20" [ngModel]="model.termination_status"
+                    name="p_termination_status" readonly>
+                </div>
+              </div>
+              <!--#endregion termination_status-->
+
+              <!--#region job_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Job Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.job_status" maxlength="10"
+                    name="p_job_status" readonly>
+                </div>
+              </div>
+              <!--#endregion job_status-->
+
+              <!--#region failed_remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Failed Remark </label>
+                  <textarea type="text" class="form-control" [ngModel]="model.failed_remarks" maxlength="4000"
+                    name="p_failed_remarks" readonly>
+                    </textarea>
+                </div>
+              </div>
+              <!--#endregion failed_remarks-->
+
+            </div>
+            <!--#endregion row-->
+
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

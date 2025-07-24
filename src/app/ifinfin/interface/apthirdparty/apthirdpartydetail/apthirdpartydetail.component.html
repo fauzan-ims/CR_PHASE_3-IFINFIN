@@ -1,0 +1,159 @@
+<div class="main-content">
+    <!-- spinner region -->
+    <div class="panel-container-spinner" *ngIf="showSpinner">
+        <app-spinner class="spinner-container"></app-spinner>
+    </div>
+    <!-- end spinner region -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card ">
+                <!--#region watermark-->
+                <div class="watermark" hidden>
+                    <h6>{{this.companyName}}</h6>
+                    <h6>{{this.userName}}</h6>
+                    <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+                </div>
+                <!--#endregion watermark-->
+                <div class="card-header ">
+                    <h5 class="card-title">Ap Third Party Info (Interface)</h5>
+                </div>
+                <div class="card-body ">
+                    <!--#region form-->
+
+                    <!--#region button back-->
+                    <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+                    <!--#endregion button back-->
+
+                    <!--#region row-->
+                    <div class="row">
+                        <!--#region code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Request No </label>
+                                <input type="text" class="form-control" [ngModel]="model.reff_code" maxlength="50"
+                                    name="p_code" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion code-->
+
+                        <!--#region Branch Code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Branch </label>
+                                <input type="text" class="form-control" [ngModel]="model.branch_name" maxlength="250"
+                                    name="p_branch_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion Branch Code-->
+
+                        <!--#region received_status-->
+                        <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Status </label>
+                                    <input type="text" class="form-control" [ngModel]="model.received_status"
+                                        maxlength="10" name="p_received_status" readonly>
+                                </div>
+                            </div> -->
+                        <!--#endregion received_status-->
+
+                        <!--#region transaction_date-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="transaction_date" class="control-label">Date </label>
+                                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.transaction_date" name="p_transaction_date"
+                                    [options]="myDatePickerOptions" #p_transaction_date="ngModel"
+                                    #transaction_date="angular-mydatepicker" autocomplete="off" readonly />
+                            </div>
+                        </div>
+                        <!--#endregion transaction_date -->
+
+                        <!--#region orig_currency_code-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <input type="text" class="form-control col-md-4" [ngModel]="model.orig_currency_code"
+                                    maxlength="3" name="p_orig_currency_code" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion orig_currency_code-->
+
+                        <!--#region orig_amount-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Orig Amount</label>
+                                <input type="text" class="form-control col-md-6" style="text-align: right;"
+                                    [ngModel]="model.orig_amount | number : '1.2-2'" name="p_orig_amount" maxlength="24"
+                                    amount="orig_amount" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion orig_amount-->
+
+                        <!--#region source_reff_no-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Reff No </label>
+                                <input type="text" class="form-control" maxlength="50" [ngModel]="model.source_reff_no"
+                                    name="p_source_reff_no" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion source_reff_no-->
+
+                        <!--#region reff_name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Reff Name </label>
+                                <input type="text" class="form-control" [ngModel]="model.reff_name" maxlength="50"
+                                    name="p_reff_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion received_source-->
+                    </div>
+                    <!--#endregion  row-->
+
+                    <span layout="horizontal-divider">
+                        <hr flex />
+                    </span>
+                    <br>
+                    <!--#region row-->
+                    <div class="row">
+                        <!--#region process_date-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="process_date" class="control-label">Process Date </label>
+                                <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                                    [ngModel]="model.process_date" name="p_process_date" [options]="myDatePickerOptions"
+                                    #p_process_date="ngModel" #process_date="angular-mydatepicker" autocomplete="off"
+                                    readonly />
+                            </div>
+                        </div>
+                        <!--#endregion process_date -->
+
+                        <!--#region process_reff_no-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Process Reff No </label>
+                                <input type="text" class="form-control" [ngModel]="model.process_reff_no" maxlength="50"
+                                    name="p_process_reff_no" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion process_reff_no-->
+
+                        <!--#region process_reff_name-->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Process Reff Name </label>
+                                <input type="text" class="form-control" [ngModel]="model.process_reff_name"
+                                    maxlength="250" name="p_process_reff_name" readonly>
+                            </div>
+                        </div>
+                        <!--#endregion process_reff_name-->
+                    </div>
+                    <!--#endregion  row-->
+                </div>
+                <div class="card-footer ">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

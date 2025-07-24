@@ -1,0 +1,261 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+
+        <div class="card-header ">
+          <h4 class="card-title">Master Approval Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #masterapprovalForm="ngForm"
+            (ngSubmit)="onFormSubmit(masterapprovalForm.value, masterapprovalForm.valid)">
+            <!--#region button submit dan back-->
+            <button type="save" class="btn btn-info btn-round" data-role="R00024210000003C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code" class="control-label">Code *</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code" required
+                    #code="ngModel" [readonly]="isReadOnly" autocomplete="off">
+                  <small
+                    *ngIf="code.errors?.required && code.touched || (code.errors?.required && masterapprovalForm.submitted) "
+                    class="text-danger">
+                    Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region approval_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="approval_name" class="control-label">Approval Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.approval_name" maxlength="250"
+                    name="p_approval_name" required #approval_name="ngModel">
+                  <small
+                    *ngIf="approval_name.errors?.required && approval_name.touched || (approval_name.errors?.required && masterapprovalForm.submitted) "
+                    class="text-danger">
+                    Approval Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion approval_name-->
+
+              <!--#region lookup approval code-->
+              <div class="col-md-4">
+                <label class="labelgsubcode">Approval *</label>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <button [disabled]="isReadOnly"
+                      class="btn btn-icon btn-outline-default btn-round btn-md btn-lookup-margin" type="button"
+                      (click)="btnLookupApproval()" data-target="#lookupModalApproval" data-toggle="modal" href="#">
+                      <i class="fa fa-search-plus"></i></button>
+                    {{model.reff_approval_category_name}}
+                    <input type="hidden" name="p_reff_approval_category_name"
+                      [ngModel]="model.reff_approval_category_name" required #reff_approval_category_name="ngModel">
+                    <input type="hidden" name="p_reff_approval_category_code"
+                      [ngModel]="model.reff_approval_category_code" required #reff_approval_category_code="ngModel">
+                  </div>
+                  <small
+                    *ngIf="reff_approval_category_code.errors?.required && reff_approval_category_code.touched || (reff_approval_category_code.errors?.required && masterapprovalForm.submitted)"
+                    class="text-danger">
+                    Description is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion lookup approval code-->
+
+              <!--#region reff_approval_category_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="reff_approval_category_name" class="control-label">Reff Approval Name</label>
+                  <input type="text" class="form-control" maxlength="250" [ngModel]="model.reff_approval_category_name"
+                    name="p_reff_approval_category_name" #reff_approval_category_name="ngModel" readonly>
+                </div>
+              </div>
+              <!--#endregion reff_approval_category_name-->
+
+              <!--#region is_active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_active-->
+            </div>
+            <!--#endregion row-->
+
+          </form>
+          <!--#end region form-->
+
+          <div *ngIf="param != null">
+            <!--#region list view-->
+            <span layout="row horizontal-divider">
+              <hr flex />
+            </span>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card-header">
+                  <h4 class="card-title">Approval Dimension List</h4>
+                </div>
+                <div class="card-body">
+                  <div class="toolbar">
+                    <!--#region button add-->
+                    <button type="button" class="btn btn-success btn-round"
+                      (click)="btnSync(model.code, model.reff_approval_category_code)"
+                      data-role="R00024210000004C">Sync</button>
+                    <!--#endregion button add-->
+                  </div>
+
+                  <!--#region list view-->
+                  <table id="datatableMasterApprovalDetail" datatable [dtOptions]="dtOptions"
+                    class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                    <thead>
+                      <tr>
+                        <th style="display: none;"></th>
+                        <th class="disabled-sorting">No</th>
+                        <th>Reff Dimension Code</th>
+                        <th>Reff Dimension Name</th>
+                        <th>Dimension</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of listdimension;let i = index">
+                        <td class="if-no-edit-btn" style="display: none;"></td>
+                        <td class="if-no-edit-btn" style="text-align: center;">{{listdimension.numberIndex+i+1}}</td>
+                        <td class="if-no-edit-btn" style="width: 20%; text-align: center;">{{row.reff_dimension_code}}
+                        </td>
+                        <td style="width: 40%; text-align: left;">{{row.reff_dimension_name}}</td>
+                        <td style="width: 40%; text-align: center;">
+                          <button class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                            (click)="btnLookupRowDimension(row.id, i)" data-toggle="modal"
+                            data-target="#lookupModalSelectDimension" href="#"><i
+                              class="fa fa-search-plus"></i></button> {{row.description}}
+                          <input type="hidden" name="p_code" value="{{row.code}}" />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!--#endregion list view-->
+                </div>
+              </div>
+            </div>
+            <!--#endregion list view-->
+          </div>
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Selectsubcode-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSelectDimension"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12" style="width: 100%">
+            <table id="datatableLookupSelectDimension" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th style="text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupSysDimension;let i=index ">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupSysDimension.numberIndex+i+1}}</td>
+                  <td style="text-align: center; width: 20%;">{{ row.code}}</td>
+                  <td style="width: 80%;">{{ row.description}}</td>
+                  <td class="text-right">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowDimension(row.code)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup lookup SelectArFree-->
+
+<!--#region lookup Approval-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalApproval"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupApproval" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupapproval;let i=index ">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupapproval.numberIndex+i+1}}</td>
+                  <td style="text-align: center; width: 20%;">{{ row.code }}</td>
+                  <td style="width: 80%;">{{ row.approval_category_name}}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowApproval(row.code, row.approval_category_name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Approval-->

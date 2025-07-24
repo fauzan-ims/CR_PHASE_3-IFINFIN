@@ -1,0 +1,119 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Sub General Code Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #subcodeForm="ngForm" (ngSubmit)="onFormSubmit(subcodeForm.value, subcodeForm.valid)">
+            <!--#region button submit, button back-->
+            <button type="submit" [hidden]="model.is_editable === '0'" class="btn btn-info btn-round"
+              data-role="R00002950004296C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit, button back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region general_code-->
+              <input hidden type="text" [ngModel]="this.param" name="p_general_code">
+              <!--#endregion general_code-->
+
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="code" class="control-label">Code *</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" name="p_code" [readonly]="isReadOnly"
+                    required #code="ngModel" maxlength="10" >
+                  <small *ngIf="(code.errors?.required && code.touched) || (code.errors?.required && subcodeForm.submitted)" class="text-danger">
+                    Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region description-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="description" class="control-label">Description *</label>
+                  <textarea [disabled]="model.is_editable === '0'" type="text" class="form-control"
+                    [ngModel]="model.description" name="p_description" required #description="ngModel"></textarea>
+                  <small *ngIf="(description.errors?.required && description.touched) || (description.errors?.required && subcodeForm.submitted)" class="text-danger">
+                    Description is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion description-->
+
+              <!--#region OJK Code-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="ojk_code" class="control-label">OJK Code *</label>
+                  <input [disabled]="model.is_editable === '0'" type="text" class="form-control"
+                    [ngModel]="model.ojk_code" name="p_ojk_code" required #ojk_code="ngModel" maxlength="10">
+                  <small *ngIf="(ojk_code.errors?.required && ojk_code.touched) || (ojk_code.errors?.required && subcodeForm.submitted)" class="text-danger">
+                    OJK Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion OJK Code-->
+            </div>
+            <!--#endregion row -->
+
+            <!--#region oder key, is active-->
+            <div class="row">
+              <!--#region oder key-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="order_key" class="control-label">Order Key *</label>
+                  <input [disabled]="model.is_editable === '0'" type="text" class="form-control col-md-2"
+                    [ngModel]="model.order_key" name="p_order_key" required #order_key="ngModel"
+                    pattern="{{NumberOnlyPattern}}">
+                  <small *ngIf="(order_key.errors?.required && order_key.touched) || (order_key.errors?.required && subcodeForm.submitted)" class="text-danger">
+                    Order Key is required
+                  </small>
+                  <small *ngIf="order_key.errors?.pattern && order_key.touched" class="text-danger">
+                    Order Key is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion oder key-->
+
+              <!--#region is active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input [disabled]="model.is_editable === '0'" class="form-check-input" type="checkbox"
+                        [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is active-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

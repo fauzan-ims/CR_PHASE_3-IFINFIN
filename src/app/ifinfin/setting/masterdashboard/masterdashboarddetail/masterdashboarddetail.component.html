@@ -1,0 +1,151 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Master Dashboard Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #masterdashboarddetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(masterdashboarddetailForm.value, masterdashboarddetailForm.valid)">
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00018660021867C">Save</button>
+            <button [hidden]="this.param === null" type="button" class="btn btn-success btn-round"
+              (click)="btnEditable()" data-role="R00018660011867U">Editable</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code" class="control-label">Code *</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" name="p_code" [readonly]="isReadOnly"
+                    required #code="ngModel" maxlength="10">
+                  <small
+                    *ngIf="code.errors?.required && code.touched || (code.errors?.required && masterdashboarddetailForm.submitted) "
+                    class="text-danger">
+                    Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region dashboard name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="dashboard_name" class="control-label">Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.dashboard_name" maxlength="250" [readonly]="model.is_editable === false"
+                    name="p_dashboard_name" required #dashboard_name="ngModel">
+                  <small
+                    *ngIf="dashboard_name.errors?.required && dashboard_name.touched || (dashboard_name.errors?.required && masterdashboarddetailForm.submitted) "
+                    class="text-danger">
+                    Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion dashboard name-->
+
+              <!--#region dashboard type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class='form-control col-md-6' [ngModel]="model.dashboard_type" name="p_dashboard_type" value='column'>
+                    <option value='column'>Column</option>
+                    <option value='pie'>Pie</option>
+                    <option value='bar'>Bar</option>
+                    <option value='line'>Line</option>
+                    <option value='spline'>Spline</option>
+                  </select>
+                </div>
+              </div>
+              <!--#endregion dashboard type-->
+            </div>
+            <!--#endregion row-->
+            <!--#region row-->
+            <div class="row">
+              
+              <!--#region dashboard grid-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Grid</label>
+                  <select class='form-control col-md-6' [ngModel]="model.dashboard_grid" name="p_dashboard_grid" value='col-md-12'>
+                    <option value='col-md-12'>Full</option>
+                    <option value='col-md-6'>Half</option>
+                    <option value='col-md-4'>Third</option>
+                    <option value='col-md-3'>Quarter</option>
+                  </select>
+                </div>
+              </div>
+              <!--#endregion dashboard grid-->
+
+              <!--#region api function-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="sp_name" class="control-label">SP Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.sp_name" maxlength="250" [readonly]="model.is_editable === false" name="p_sp_name"
+                    required #sp_name="ngModel">
+                  <small
+                    *ngIf="sp_name.errors?.required && sp_name.touched || (sp_name.errors?.required && masterdashboarddetailForm.submitted) "
+                    class="text-danger">
+                    SP Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion api function-->
+
+              <!--#region is_active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_active-->
+
+            </div>
+            <!--#endregion row-->
+            <!--#region row-->
+            <div class="row">
+             
+              <!--#region is_editable-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input disabled class="form-check-input" type="checkbox" [ngModel]="model.is_editable"
+                        name="p_is_editable"> Editable
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_editable-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

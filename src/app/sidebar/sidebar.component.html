@@ -1,0 +1,79 @@
+<div class="sidebar" data-active-color="warning" data-color="white">
+  <div class="logo" style="background-color:#ff6a6a" (click)="goToMainMenu()">
+    <a href="javascript: void(0)" class="simple-text logo-mini">
+      <div class="logo-image-small">
+        <img src="./assets/img/iFinancing.svg" />
+      </div>
+    </a>
+
+    <a href="javascript: void(0)" class="simple-text logo-normal">
+      FINANCE
+    </a>
+  </div>
+
+  <!-- spinner region -->
+  <div *ngIf="showSpinnerF1 && showSpinnerF2" class="panel-container-spinner" style="position: static;">
+    <app-spinner class="spinner-container" style="position: relative;top: 40%;"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+
+  <div class="sidebar-wrapper">
+
+    <ul class="nav">
+      <li routerLinkActive="active" *ngFor="let menuitem of menuItems">
+        <!--If is a single link-->
+        <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link'">
+          <i class="{{menuitem.icontype}}"></i>
+          <p>{{menuitem.title}}</p>
+        </a>
+        <!--If it have a submenu-->
+        <a data-toggle="collapse" href="#{{menuitem.idModule}}" *ngIf="menuitem.type === 'sub'">
+          <i class="{{menuitem.icontype}}"></i>
+          <p>{{menuitem.title}}<b class="caret"></b></p>
+        </a>
+        <!-- jaka nambah supaya bisa nambah 1 sub menu lagi -->
+        <div *ngIf="menuitem?.submenuitems?.length > 0">
+          <!--jika ada submenu lagi maka panggil ini-->
+
+          <div id="{{menuitem.idModule}}" class="collapse" *ngIf="menuitem.type === 'sub'">
+            <ul class="nav static-top">
+              <li routerLinkActive="active" *ngFor="let submenuitems of menuitem.submenuitems"
+                style="margin-left: 10px;">
+                <a href="#{{submenuitems.idModule}}" data-toggle="collapse" *ngIf="submenuitems.type === 'submenus'">
+                  <i class="{{submenuitems.icontype}}"></i>
+                  <p>{{submenuitems.title}}<b class="caret"></b></p>
+                </a>
+
+                <div id="{{submenuitems.idModule}}" class="collapse" *ngIf="submenuitems.type === 'submenus'">
+                  <ul class="nav" *ngFor="let childitem of submenuitems.children">
+                    <li routerLinkActive="active">
+                      <a [routerLink]="[submenuitems.path, childitem.path]">
+                        <span class="sidebar-mini-icon">{{childitem.ab}}</span>
+                        <span class="sidebar-normal">{{childitem.title}}</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!--Display the submenu items (jika hanya punya 1 child)-->
+        <div id="{{menuitem.idModule}}" class="collapse" *ngIf="menuitem.type === 'sub'">
+          <ul class="nav">
+            <li routerLinkActive="active" *ngFor="let childitem of menuitem.childrenitemsonesub">
+              <a routerLinkActive="active" [routerLink]="[menuitem.path, childitem.path]"
+                style="padding-left: 20px; font-size: 12px;">
+                <span class="sidebar-mini-icon">{{childitem.ab}}</span>
+                <span class="sidebar-normal">{{childitem.title}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </li>
+    </ul>
+  </div>
+</div>

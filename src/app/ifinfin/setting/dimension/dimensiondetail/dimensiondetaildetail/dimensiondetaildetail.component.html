@@ -1,0 +1,79 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+
+        <div class="card-header ">
+          <h4 class="card-title">Dimension Value Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #dimensionvalueForm="ngForm"
+            (ngSubmit)="onFormSubmit(dimensionvalueForm.value, dimensionvalueForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="save" class="btn btn-info btn-round" data-role="R00024220000006C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region dimension_code-->
+              <input hidden type="text" [ngModel]="this.param" name="p_dimension_code">
+              <!--#endregion dimension_code-->
+
+              <!--#region code-->
+              <input type="text" class="form-control" [ngModel]="this.params" name="p_code" hidden>
+              <!--#endregion code-->
+
+              <!--#region description-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="description" class="control-label">Description *</label>
+                  <input type="text" class="form-control" [ngModel]="model.description" maxlength="250" required
+                    #description="ngModel" name="p_description">
+                  <small
+                    *ngIf="(description.errors?.required && description.touched) || (description.errors?.required && dimensionvalueForm.submitted)"
+                    class="text-danger">
+                    Description is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion description-->
+
+              <!--#region value-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="value" class="control-label">Value *</label>
+                  <input type="text" class="form-control" [ngModel]="model.value" maxlength="250" required
+                    #value="ngModel" name="p_value">
+                  <small
+                    *ngIf="(value.errors?.required && value.touched) || (value.errors?.required && dimensionvalueForm.submitted)"
+                    class="text-danger">
+                    Value is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion value-->
+            </div>
+            <!--#endregion row-->
+          </form>
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

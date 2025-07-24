@@ -1,0 +1,188 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h4 class="card-title">Transaction Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #transactiondetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(transactiondetailForm.value, transactiondetailForm.valid)">
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00002980000299C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code" class="control-label">Code *</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" name="p_code" [readonly]="isReadOnly"
+                    required #code="ngModel" maxlength="10">
+                  <small
+                    *ngIf="(code.errors?.required && code.touched) || (code.errors?.required && transactiondetailForm.submitted)"
+                    class="text-danger">
+                    Code is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region transaction name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="transaction_name" class="control-label">Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.transaction_name" maxlength="250"
+                    name="p_transaction_name" required #transaction_name="ngModel">
+                  <small
+                    *ngIf="(transaction_name.errors?.required && transaction_name.touched) || (transaction_name.errors?.required && transactiondetailForm.submitted)"
+                    class="text-danger">
+                    Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion transaction name-->
+
+              <!--#region active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion active-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region module name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="module_name" class="control-label">API *</label>
+                  <input type="text" class="form-control" [ngModel]="model.module_name" maxlength="250"
+                    name="p_module_name" required #module_name="ngModel">
+                  <small
+                    *ngIf="(module_name.errors?.required && module_name.touched) || (module_name.errors?.required && transactiondetailForm.submitted)"
+                    class="text-danger">
+                    API is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion module name-->
+
+
+              <!--#region gl link-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="gl_link_code" class="control-label">GL Link *</label>
+                  <div class="col-md-12">
+                    <span>
+                      <button class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                        (click)="btnLookupGlLink()" data-toggle="modal" data-target="#lookupModalGlLink" href="#"><i
+                          class="fa fa-search-plus"></i></button>
+                      {{model.gl_link_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.gl_link_code" name="p_gl_link_code"
+                        required #gl_link_code="ngModel">
+                      <input type="hidden" class="form-control" [ngModel]="model.gl_link_name" name="p_gl_link_name"
+                        required #gl_link_name="ngModel">
+                    </span>
+                  </div>
+                  <small
+                    *ngIf="(gl_link_code.errors?.required && gl_link_code.touched || (gl_link_code.errors?.required && transactiondetailForm.submitted)) || (gl_link_code.errors?.required && transactiondetailForm.submitted)"
+                    class="text-danger">
+                    GL Link is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion gl link-->
+
+              <!--#region calculated-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_calculated"
+                        name="p_is_calculated" (change)="IsCalculated($event)">
+                      Calculated
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion calculated-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup gl link  -->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalGlLink"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+
+            <table id="datatableLookupGlLink" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupGlLink;let i=index ">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupGlLink.numberIndex+i+1}}</td>
+                  <td style="text-align: center; width: 20%;">{{ row.code }}</td>
+                  <td style="text-align: left; width: 80%;">{{ row.description }}</td>
+                  <td class="text-center" style="text-align: center;">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowGlLink(row.code, row.description)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup gl link-->

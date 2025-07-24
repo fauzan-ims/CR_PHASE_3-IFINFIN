@@ -1,0 +1,1134 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Cashier Transaction Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #cashiertransactiondetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(cashiertransactiondetailForm.value, cashiertransactiondetailForm.valid)">
+
+            <!--#region button save, post, cancel dan back-->
+            <button id="btnSubmitCashierTransactionDetail" type="submit" class="btn btn-info btn-round"
+              [hidden]="isButton" data-role="R00003180003319C">Save</button>
+            <button type="button" class="btn btn-success btn-round" [hidden]="isButton || param == null"
+              data-role="R00003180000319O" (click)="btnPaid()">Post</button>
+            <button type="button" class="btn btn-warning btn-round" [hidden]="isButton || param == null"
+              data-role="R00003180000319R" (click)="btnCancel()">Cancel</button>
+            <button type="button" style="width: fit-content;" [hidden]="model.cashier_status !=='PAID'"
+              class="btn btn-warning btn-round" (click)="btnReversal()" data-role="R00003180002319O">
+              Reversal
+            </button>
+            <!--(+) Ari 2023-09-07 add button view approval for reversal-->
+            <button
+              [hidden]="model.cashier_status !== 'ON REVERSE' && model.cashier_status !== 'REVERSAL' && model.cashier_status !== 'PAID'"
+              type="button" style='float: right;' class="btn btn-success btn-round custom-button-width"
+              (click)="btnViewApproval()" data-toggle="modal" data-target="#lookupModalApproval" href="#">
+              View Approval Reversal
+            </button>
+            <!--(+) Ari 2023-09-07 add button view approval for reversal-->
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+
+            <button type="button" id="reloadcashierdetail" class="btn btn-info btn-round" (click)="this.callGetrow()"
+              hidden>
+              Reload
+            </button>
+            <!--#endregion button save, post, cancel dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Cashier Transaction No</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Cashier Transaction No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Branch </label>
+                  <input type="text" class="form-control" readonly [ngModel]="model.branch_name" maxlength="250"
+                    name="p_branch_name">
+                  <input type="hidden" class="form-control" [ngModel]="model.branch_code" name="p_branch_code">
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region  Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input readonly type="text" class="form-control" [ngModel]="model.cashier_status"
+                    name="p_cashier_status">
+                </div>
+              </div>
+              <!--#endregion  Status-->
+
+              <div class="col-md-4">
+                <!--#region row-->
+                <div class="row">
+                  <!--#region  cashier_trx_date -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="cashier_trx_date" class="control-label">Date </label>
+                      <input class="form-control" placeholder="dd/mm/yyyy" angular-mydatepicker
+                        [ngModel]="model.cashier_trx_date" name="p_cashier_trx_date" [options]="myDatePickerOptions"
+                        required #p_cashier_trx_date="ngModel" #cashier_trx_date="angular-mydatepicker"
+                        autocomplete="off" readonly />
+                    </div>
+                  </div>
+                  <!--#endregion cashier_trx_date -->
+
+                  <!--#region cashier_value_date-->
+                  <div class="col-md-6">
+                    <div class="form-group"
+                      [class.has-error]="p_cashier_value_date.invalid && p_cashier_value_date.touched">
+                      <label for="cashier_value_date" class="control-label">Value Date *</label>
+                      <input [ngStyle]="getStyles(isButton)" class="form-control" placeholder="dd/mm/yyyy"
+                        angular-mydatepicker [ngModel]="model.cashier_value_date" name="p_cashier_value_date"
+                        [options]="myDatePickerOptions" (click)="cashier_value_date.toggleCalendar()" required
+                        #p_cashier_value_date="ngModel" #cashier_value_date="angular-mydatepicker" autocomplete="off"
+                        [readonly]="isButton" (dateChanged)="valueDate($event)" />
+                      <input class=" form-control col-md-6" angular-mydatepicker [ngModel]="model.cashier_value_date2"
+                        name="p_cashier_value_date2" [options]="myDatePickerOptions"
+                        #cashier_value_date2="angular-mydatepicker" autocomplete="off" hidden>
+                      <small
+                        *ngIf="(p_cashier_value_date.errors?.required && p_cashier_value_date.touched) || (p_cashier_value_date.errors?.required && cashiertransactiondetailForm.submitted)"
+                        class="text-danger">
+                        Value Date is required
+                      </small>
+                    </div>
+                  </div>
+                  <!--#endregion cashier_value_date -->
+                </div>
+              </div>
+
+              <!--#region cashier no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Cashier No</label>
+                  <input readonly type="text" class="form-control" [ngModel]="model.cashier_main_code"
+                    name="p_cashier_main_code">
+                </div>
+              </div>
+              <!--#endregion cashier no-->
+
+              <!--#region cashier name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Cashier Name</label>
+                  <input readonly type="text" class="form-control" [ngModel]="model.cashier_name" name="p_cashier_name">
+                </div>
+              </div>
+              <!--#endregion cashier name-->
+
+              <!--#region is_received_request-->
+              <div class="col-md-4">
+                <label>Received Type</label>
+                <div class="form-group col-md-6" style="margin-left: 15px;">
+                  <div class="row">
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_is_received_request" value="0"
+                          [disabled]="isReadOnly || !isRequest" (change)=" receivedType($event)"
+                          [ngModel]="model.is_received_request">Entry
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_is_received_request" value="1"
+                          [disabled]="isReadOnly || !isRequest" (change)=" receivedType($event)"
+                          [ngModel]="model.is_received_request">Request
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion is_received_request-->
+
+              <!--#region client name-->
+              <!-- <div class="col-md-4">
+                <div class="form-group">
+                  <label>Client Name</label>
+                  <input readonly type="text" class="form-control" [ngModel]="model.client_name" name="p_client_name">
+                </div>
+              </div> -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="labelmodule" (click)="resteClientName()" style="cursor: pointer;" title="CLEAR">Client
+                    Name</label>
+                  <div class="col-md-12">
+                    <span>
+                      <button [disabled]="this.param !== null"
+                        class="btn btn-icon btn-outline-default btn-round btn-md btn-lookup-margin" type="button"
+                        (click)="btnLookupClientName()" data-toggle="modal" data-target="#lookupModalClientName"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.client_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.client_no" name="p_client_no"
+                        #client_no="ngModel">
+                      <input type="hidden" class="form-control" [ngModel]="model.client_name" name="p_client_name"
+                        #client_name="ngModel">
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion client name-->
+
+              <!--#region agreement no-->
+              <div class="col-md-4">
+                <!--#region row-->
+                <div class="row">
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label class="control-label" (click)="btnClearAgreement()" style="cursor: pointer;" title="Clear"
+                        [hidden]="isAgreement || model.cashier_status != 'HOLD'">Agreement No </label>
+                      <label [hidden]="model.cashier_status != 'PAID'">Agreement No </label>
+                      <label class="control-label" [hidden]="!isAgreement">Agreement No *</label>
+                      <div class="col-md-12 buttons btn-lookup-margin">
+                        <span>
+                          <button [disabled]="this.param !== null"
+                            class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                            (click)="btnLookupAgreement()" data-toggle="modal" data-target="#lookupModalAgreement"
+                            href="#"><i class="fa fa-search-plus"></i></button>
+                          {{model.agreement_external_no}} - {{model.currency_code}}
+                          <input type="hidden" class="form-control" [ngModel]="model.agreement_no" name="p_agreement_no"
+                            #agreement_no="ngModel">
+                        </span>
+                      </div>
+                      <small
+                        [hidden]="agreement_no.valid || (agreement_no.pristine && !cashiertransactiondetailForm.submitted)"
+                        class="text-danger">
+                        Agreement No is required
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-md-3" hidden>
+                    <div class="form-group">
+                      <label>Currency</label>
+                      <input readonly type="text" class="form-control" [ngModel]="model.currency_code"
+                        name="p_currency_code">
+                    </div>
+                  </div>
+                </div>
+                <!--#endregion row-->
+              </div>
+              <!--#endregion agreement no-->
+
+              <!--#region factoring_type-->
+              <div class="col-md-4" hidden>
+                <div class="form-group">
+                  <label for="factoring_type" class="control-label">Factoring Type </label>
+                  <input id="factoringtype" type="text" class="form-control" [ngModel]="model.factoring_type"
+                    name="p_factoring_type" #factoring_type="ngModel">
+                </div>
+              </div>
+              <!--#endregion factoring_type-->
+
+              <!--#region type //[hidden]="model.received_request_code !== null && this.param !== null"-->
+              <!-- <div class="col-md-4" [hidden]="model.cashier_type === 'PDC' && this.param !== null">
+                <div class="form-group">
+                  <label>Type</label>
+                  <select class='form-control col-md-6' [(ngModel)]="model.cashier_type" name="p_cashier_type"
+                    [disabled]="isButton" (change)="cashierType($event)">
+                    <option value='TRANSFER'>TRANSFER</option>
+                    <option value='CASH'>CASH</option>
+                    <option value='EDC'>EDC</option>
+                    <option value='PPT'>PPT</option>
+                    <option value='AUTODEBIT'>AUTODEBIT</option>
+                    <option [hidden]="this.param !== null" value='PDC'>PDC</option>
+                    <option [hidden]="this.param !== null" value='FIELD COLL'>COLLECTION FIELD COLL</option>
+                    <option [hidden]="this.param !== null" value='SKT'>COLLECTION SKT</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4" [hidden]="this.param === null || this.model.cashier_type !== 'PDC'">
+                <div class="form-group">
+                  <label for="cashier_type" class="control-label">Type </label>
+                  <input type="text" class="form-control col-md-6" [ngModel]="model.cashier_type" readonly
+                    name="p_cashier_type" #cashier_type="ngModel">
+                </div>
+              </div> -->
+              <!--#endregion type //this.param === null && this.received_request_code-->
+
+              <!--#region cashier_type-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Type</label>
+                  <input type="text" class="form-control col-md-6" [ngModel]="model.cashier_type" readonly
+                    name="p_cashier_type" #cashier_type="ngModel">
+                </div>
+              </div>
+              <!--#endregion cashier_type-->
+
+              <!--#region  Bank-->
+              <div class="col-md-4">
+                <!--#region row || =" isPdc || isrowCount" model.received_request_code !== null-->
+                <div class="row">
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label class="control-label labelmodule" [hidden]="model.cashier_type !== 'CASH'">Bank</label>
+                      <label class="control-label labelmodule" [hidden]="model.cashier_type === 'CASH'">Bank *</label>
+
+                      <div class="col-md-12 buttons btn-lookup-margin">
+                        <span>
+                          <button [disabled]="isButton || isCash || isPdc"
+                            class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                            (click)="btnLookupBank()" data-toggle="modal" data-target="#lookupModalBank" href="#"><i
+                              class="fa fa-search-plus"></i></button>
+                          {{model.branch_bank_name}} - {{model.bank_account_no}}
+                          <input type="hidden" class="form-control" [ngModel]="model.branch_bank_code"
+                            name="p_branch_bank_code" [required]="model.cashier_type !== 'CASH'">
+                          <input type="hidden" class="form-control" [ngModel]="model.branch_bank_name"
+                            name="p_branch_bank_name" #branch_bank_name="ngModel">
+                          <input type="hidden" class="form-control" [ngModel]="model.bank_gl_link_code"
+                            name="p_bank_gl_link_code">
+                          <input type="hidden" class="form-control" [ngModel]="model.bank_account_name"
+                            name="p_bank_account_name">
+                          <input type="hidden" class="form-control" [ngModel]="model.bank_account_no"
+                            name="p_bank_account_no">
+                        </span>
+                      </div>
+                      <small
+                        [hidden]="branch_bank_name.valid || (branch_bank_name.pristine && !cashiertransactiondetailForm.submitted)"
+                        class="text-danger">
+                        Bank is required
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-md-3" hidden>
+                    <div class="form-group">
+                      <label>Currency</label>
+                      <input readonly type="text" class="form-control" [ngModel]="model.cashier_currency_code"
+                        name="p_cashier_currency_code">
+                    </div>
+                  </div>
+                </div>
+                <!--#endregion row-->
+              </div>
+              <!--#endregion  Bank-->
+
+              <!--#region  Request-->
+              <div class="col-md-4" [hidden]="isRequest">
+                <div class="form-group">
+                  <label class="control-label">Received Request *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <button [disabled]="isButton || isReadOnly"
+                      class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                      (click)="btnlookupCashiesrReceivedRequest()" data-toggle="modal"
+                      data-target="#lookupModalReceivedRequest" href="#"><i class="fa fa-search-plus"></i></button>
+                    {{model.received_request_code}}
+                    <input type="text" hidden class="form-control" [ngModel]="model.received_request_code"
+                      name="p_received_request_code" #received_request_code="ngModel" [required]="!isRequest">
+                  </div>
+                  <small
+                    [hidden]="received_request_code.valid || (received_request_code.pristine && !cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Received Request is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Request-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region cashier_orig_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_orig_amount" class="control-label">Orig Amount * <b [hidden]="isLabel"
+                      style="color: red;">Amount
+                      updated by detail allocation</b></label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_orig_amount | number : '1.2-2'" name="p_cashier_orig_amount" required
+                    #cashier_orig_amount="ngModel" maxlength="24" amount="cashier_orig_amount"
+                    (change)="origAmount($event)" [readonly]="isButton || !isRequest">
+                  <small
+                    *ngIf="(cashier_orig_amount.errors?.required && cashier_orig_amount.touched) || (cashier_orig_amount.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Orig Amount is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion cashier_orig_amount-->
+
+              <!--#region cashier_exch_rate-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_exch_rate" class="control-label">Exch Rate * </label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.cashier_exch_rate | number : '1.6-6'" name="p_cashier_exch_rate" required
+                    #cashier_exch_rate="ngModel" maxlength="23" rate="cashier_exch_rate"
+                    (ngModelChange)="model.cashier_exch_rate=exchRate($event)"
+                    [readonly]="isButton || isCash || isCurrency">
+                  <small
+                    *ngIf="(cashier_exch_rate.errors?.required && cashier_exch_rate.touched) || (cashier_exch_rate.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Exch Rate is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion cashier_exch_rate-->
+
+              <!--#region cashier_base_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Base Amount <b [hidden]="isLabel" style="color: red;">Amount
+                      updated by detail allocation</b></label>
+                  <div class="row" style="margin: auto;">
+                    <input type="text" class="form-control col-md-6" style="text-align: right;"
+                      [ngModel]="model.cashier_base_amount | number : '1.2-2'" name="p_cashier_base_amount"
+                      maxlength="24" amount="cashier_base_amount" readonly>
+                    <span class="col-md-6">
+                      <button type="button" class="btn btn-success btn-round" [hidden]="param == null || isButton"
+                        (click)="btnGenerateByClick(model.code, model.cashier_orig_amount, cashiertransactiondetailForm.valid)"
+                        style="width: fit-content;margin: auto;" data-role="R00003180000000C">Auto Allocate</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion cashier_base_amount-->
+
+              <!--#region deposit_amount-->
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Deposit Amount</label>
+                      <input type="text" class="form-control" style="text-align: right;"
+                        [ngModel]="model.deposit_amount | number : '1.2-2'" name="p_deposit_amount" maxlength="24"
+                        amount="deposit_amount" readonly>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-check mt-4" style="margin-left: -35px;">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" [ngModel]="model.is_use_deposit"
+                            name="p_is_use_deposit" (change)="UseDeposit($event)" [disabled]="isButton">
+                          Use Deposit
+                          <span class="form-check-sign"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion deposit_amount-->
+
+              <!--#region deposit_used_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="deposit_used_amount" class="control-label">Deposit Use Amount *</label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.deposit_used_amount | number : '1.2-2'" name="p_deposit_used_amount"
+                    [required]="model.is_use_deposit" #deposit_used_amount="ngModel" maxlength="24"
+                    amount="deposit_used_amount" (change)="depositUsedAmount($event)"
+                    [readonly]="!model.is_use_deposit || isButton">
+                  <!--(ngModelChange)="model.deposit_used_amount=useAmount($event)"-->
+                  <small
+                    *ngIf="(deposit_used_amount.errors?.required && deposit_used_amount.touched) || (deposit_used_amount.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Deposit Use Amount is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion deposit_used_amount-->
+
+              <!--#region received_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="received_amount" class="control-label">Received Amount <b [hidden]="isLabel"
+                      style="color: red;">Amount
+                      updated by detail allocation</b></label>
+                  <input type="text" class="form-control col-md-6" style="text-align: right;"
+                    [ngModel]="model.received_amount | number : '1.2-2'" name="p_received_amount" required
+                    #received_amount="ngModel" maxlength="24" amount="received_amount" readonly>
+                  <small
+                    *ngIf="(received_amount.errors?.required && received_amount.touched) || (received_amount.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Received Amount is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion cashier_orig_amount-->
+
+              <!--#region radio button received_from-->
+              <div class="col-md-4">
+                <label>Received From</label>
+                <div class="form-group col-md-6" style="margin-left: 15px;">
+                  <div class="row">
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_received_from" value="CLIENT"
+                          [disabled]="isButton" [(ngModel)]="model.received_from">CLIENT
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                    <!-- <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_received_from" value="COLLECTOR"
+                          [disabled]="isButton" [(ngModel)]="model.received_from">COLLECTOR
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div> -->
+                    <div class="form-check-radio form-check-inline">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="p_received_from" value="OTHER"
+                          [disabled]="isButton" [(ngModel)]="model.received_from">OTHER
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion radio button received_from-->
+
+              <!--#region receipt no-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label" (click)="btnClearReceiptMain()" style="cursor: pointer;"
+                    title="Clear">Receipt No
+                  </label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isButton" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupReceiptMain()" data-toggle="modal"
+                        data-target="#lookupModalReceiptMain" href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.receipt_no}}
+                      <input type="hidden" class="form-control" [ngModel]="model.receipt_code" name="p_receipt_code"
+                        #receipt_code="ngModel">
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion receipt no-->
+
+              <!--#region  Reff No-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Reff No</label>
+                  <input type="text" class="form-control" [ngModel]="model.reff_no" maxlength="250" name="p_reff_no"
+                    [readonly]="isButton">
+                </div>
+              </div>
+              <!--#endregion   Reff No-->
+
+              <!--#region card_receipt_reff_no-->
+              <div class="col-md-4" [hidden]="model.cashier_type !== 'EDC'">
+                <div class="form-group"
+                  [class.has-error]="card_receipt_reff_no.invalid && card_receipt_reff_no.touched">
+                  <!-- <label [hidden]="model.cashier_type === 'EDC'">Card Reff No</label> -->
+                  <label for="card_bank_name" class="control-label">Card Reff No *</label>
+                  <input type="text" class="form-control" maxlength="50" [ngModel]="model.card_receipt_reff_no"
+                    name="p_card_receipt_reff_no" [disabled]="model.cashier_type !== 'EDC'" [readonly]="isButton"
+                    [required]="model.cashier_type === 'EDC'" #card_receipt_reff_no="ngModel">
+                  <small
+                    *ngIf="(card_receipt_reff_no.errors?.required && card_receipt_reff_no.touched) || (card_receipt_reff_no.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Card Reff No is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion card_receipt_reff_no-->
+
+              <!--#region card_bank_name-->
+              <div class="col-md-4" [hidden]="model.cashier_type !== 'EDC'">
+                <div class="form-group">
+                  <!-- <label [hidden]="model.cashier_type === 'EDC'">Card Bank Name</label> -->
+                  <label for="card_bank_name" class="control-label">Card Bank Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.card_bank_name" maxlength="250"
+                    name="p_card_bank_name" [disabled]="model.cashier_type !== 'EDC'" [readonly]="isButton"
+                    [required]="model.cashier_type === 'EDC'" #card_bank_name="ngModel">
+                  <small
+                    *ngIf="(card_bank_name.errors?.required && card_bank_name.touched) || (card_bank_name.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Card Bank Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion card_bank_name-->
+
+              <!--#region card_account_name-->
+              <div class="col-md-4" [hidden]="model.cashier_type !== 'EDC'">
+                <div class="form-group">
+                  <!-- <label [hidden]="model.cashier_type === 'EDC'">Card Account Name</label> -->
+                  <label for="card_account_name" class="control-label">Card Account Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.card_account_name" maxlength="250"
+                    name="p_card_account_name" [disabled]="model.cashier_type !== 'EDC'" [readonly]="isButton"
+                    [required]="model.cashier_type === 'EDC'" #card_account_name="ngModel">
+                  <small
+                    *ngIf="(card_account_name.errors?.required && card_account_name.touched) || (card_account_name.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Card Account Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion card_account_name-->
+
+              <!--#region received_payor_reference_no-->
+              <div class="col-md-4" [hidden]="model.received_from !== 'OTHER'">
+                <div class="form-group"
+                  [class.has-error]="received_payor_reference_no.invalid && received_payor_reference_no.touched">
+                  <!-- <label [hidden]="model.received_from !== 'OTHER'">Payor Reff No</label> -->
+                  <label for="received_payor_reference_no" class="control-label">Payor Reff No *</label>
+                  <input type="text" class="form-control" maxlength="50" [ngModel]="model.received_payor_reference_no"
+                    name="p_received_payor_reference_no" [disabled]="model.received_from !== 'OTHER'"
+                    [readonly]="isButton" [required]="model.received_from === 'OTHER'"
+                    #received_payor_reference_no="ngModel">
+                  <small
+                    *ngIf="(received_payor_reference_no.errors?.required && received_payor_reference_no.touched) || (received_payor_reference_no.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Payor Reff No is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion received_payor_reference_no-->
+
+              <!--#region received_payor_name-->
+              <div class="col-md-4" [hidden]="model.received_from !== 'OTHER'">
+                <div class="form-group">
+                  <!-- <label [hidden]="model.received_from !== 'OTHER'">Payor</label> -->
+                  <label for="received_payor_name" class="control-label">Payor *</label>
+                  <input type="text" class="form-control" maxlength="250" [ngModel]="model.received_payor_name"
+                    name="p_received_payor_name" [disabled]="model.received_from !== 'OTHER'" [readonly]="isButton"
+                    [required]="model.received_from === 'OTHER'" #received_payor_name="ngModel">
+                  <small
+                    *ngIf="(received_payor_name.errors?.required && received_payor_name.touched) || (received_payor_name.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Payor is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion received_payor_name-->
+
+              <!--#region area phone no-->
+              <div class="col-md-4" [hidden]="model.received_from !== 'OTHER'">
+                <div class="form-group"
+                  [class.has-error]="received_payor_area_no_hp.invalid && received_payor_area_no_hp.touched || received_payor_no_hp.invalid && received_payor_no_hp.touched">
+                  <!-- <label [hidden]="model.received_from !== 'OTHER'"
+                    for="received_payor_area_no_hp && received_payor_no_hp" class="control-label">Payor Phone
+                  </label> -->
+                  <label for="received_payor_area_no_hp && received_payor_no_hp" class="control-label">Payor Phone *
+                  </label>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <input type="text" class="form-control" maxlength="4" [ngModel]="model.received_payor_area_no_hp"
+                        name="p_received_payor_area_no_hp" #received_payor_area_no_hp="ngModel"
+                        [disabled]="model.received_from !== 'OTHER'" [readonly]="isButton"
+                        onKeyPress="if(this.value.length==4) return false;" min="0" pattern={{NumberOnlyPattern}}
+                        [required]="model.received_from === 'OTHER'">
+                    </div>
+                    -
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" maxlength="15" [ngModel]="model.received_payor_no_hp"
+                        name="p_received_payor_no_hp" onKeyPress="if(this.value.length==15) return false;" min="0"
+                        #received_payor_no_hp="ngModel" pattern={{NumberOnlyPattern}} [readonly]="isButton"
+                        [disabled]="model.received_from !== 'OTHER'" [required]="model.received_from === 'OTHER'">
+                    </div>
+                  </div>
+                </div>
+
+                <small
+                  *ngIf="received_payor_area_no_hp.errors?.pattern && received_payor_area_no_hp.touched || received_payor_no_hp.errors?.pattern && received_payor_no_hp.touched"
+                  class="text-danger">
+                  Format should be <i>0-9</i>.
+                </small>
+                <small
+                  *ngIf="(received_payor_area_no_hp.errors?.required && received_payor_area_no_hp.touched || received_payor_no_hp.errors?.required && received_payor_no_hp.touched) || (received_payor_area_no_hp.errors?.required && cashiertransactiondetailForm.submitted)"
+                  class="text-danger">
+                  Payor is required
+                </small>
+              </div>
+              <!--#endregion area phone no-->
+
+              <!--#region Collector-->
+              <div class="col-md-4" [hidden]="model.received_from !== 'COLLECTOR'">
+                <div class="form-group">
+                  <label class="control-label">Collector *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="model.received_from !== 'COLLECTOR'"
+                        class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                        (click)="btnLookupCollector()" data-toggle="modal" data-target="#lookupModalCollector"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.received_collector_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.received_collector_code"
+                        name="p_received_collector_code" [required]="model.received_from === 'COLLECTOR'"
+                        #received_collector_code="ngModel" [disabled]="model.received_from !== 'COLLECTOR'">
+                      <input type="hidden" class="form-control" [ngModel]="model.received_collector_name"
+                        name="p_received_collector_name" [disabled]="model.received_from !== 'COLLECTOR'">
+                    </span>
+                  </div>
+                  <small
+                    [hidden]="received_collector_code.valid || (received_collector_code.pristine && !cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Collector is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Collector-->
+
+              <!--#region  Remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="cashier_remarks" class="control-label">Remark *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.cashier_remarks" maxlength="4000"
+                    name="p_cashier_remarks" required #cashier_remarks="ngModel" [readonly]="isButton"></textarea>
+                  <small
+                    *ngIf="(cashier_remarks.errors?.required && cashier_remarks.touched) || (cashier_remarks.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    Remark is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion  Remarks-->
+
+              <!--#region pdc code-->
+              <div class="col-md-4" [hidden]="model.cashier_type !=='PDC'">
+                <div class="form-group">
+                  <label for="pdc_no" class="control-label">PDC No </label>
+                  <!-- <label [hidden]="model.cashier_type ==='PDC'" for="pdc_no" class="control-label">PDC No </label> -->
+                  <input type="text" class="form-control" [ngModel]="model.pdc_no" maxlength="50" name="p_pdc_no"
+                    readonly [required]="model.cashier_type ==='PDC'" #pdc_no="ngModel">
+                  <input type="text" hidden class="form-control" [ngModel]="model.pdc_code" maxlength="50"
+                    name="p_pdc_code" readonly>
+                  <small
+                    *ngIf="(pdc_no.errors?.required && pdc_no.touched) || (pdc_no.errors?.required && cashiertransactiondetailForm.submitted)"
+                    class="text-danger">
+                    PDC No is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion pdc code-->
+            </div>
+            <!--#endregion  row-->
+          </form>
+          <!--#endregion readonly-->
+        </div>
+
+        <!--#region wizard-->
+        <div class="wizard-custom-margin" [hidden]="param == null">
+          <!--#region wizard container-->
+          <div class="wizard-container">
+            <div class="card-wizard" style="opacity: 1 !important; min-height: 0px;" data-color="primary"
+              id="wizardProfile">
+              <div class="text-center">
+                <div class="wizard-navigation">
+                  <ul>
+                    <li class="nav-item">
+                      <a class="nav-link" (click)="cashiertransactionallocationwiz()"
+                        id="cashiertransactionallocationwiz" href="#cashiertransactionallocationlist" data-toggle="tab"
+                        role="tab" aria-controls="cashiertransactionallocationlist" aria-selected="true">
+                        Allocation
+                      </a>
+                    </li>
+                    <!-- <li id="cashiertransactioninvoicewiz" class="nav-item">
+                      <a class="nav-link" (click)="cashiertransactioninvoicewiz()" href="#cashiertransactioninvoicelist"
+                        data-toggle="tab" role="tab" aria-controls="cashiertransactioninvoicelist" aria-selected="true">
+                        Invoice
+                      </a>
+                    </li> -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--endregion wizard-->
+          <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Collector-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalCollector"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupCollector" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupcollector;let i=index ">
+                  <td style="text-align: center;">{{lookupcollector.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.collector_name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowCollector(row.code, row.collector_name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Collector-->
+
+<!--#region lookup agreement-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalAgreement"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupAgreement" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Agreement No</th>
+                  <th>Installment Amount/Last Paid No</th>
+                  <th>Facility/Asset</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupagreement;let i=index ">
+                  <td style="text-align: center;">{{lookupagreement.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td style="width: 30%;">{{ row.agreement_external_no }} <br> {{ row.client_name }}</td>
+                  <td class="text-right" style="width: 20%;">{{ row.installment_amount | number : '1.2-2' }} <br> {{
+                    row.last_paid_installment_no }} </td>
+                  <td style="width: 50%;">{{ row.facility_name }} <br> {{ row.asset_description }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowAgreement(row.agreement_no, row.agreement_external_no, row.client_name, row.currency_code, row.factoring_type)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup agreement-->
+
+<!--#region lookup CashierMain-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalCashierMain"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupCashierMain" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Cashier Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupcashier;let i=index ">
+                  <td style="text-align: center;">{{lookupcashier.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.employee_name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowCashierMain(row.code, row.employee_name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup agreement-->
+
+<!--#region lookup receipt main-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalReceiptMain"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupReceiptMain" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Receipt No</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupreceiptmain;let i=index ">
+                  <td style="text-align: center;">{{lookupreceiptmain.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td style="width: 100%;">{{ row.receipt_no }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowReceiptMain(row.code, row.receipt_no)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup receipt main-->
+
+<!--#region lookup bank-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalBank" style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupBank" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Name</th>
+                  <th>Account No</th>
+                  <th>Account Name</th>
+                  <th>Currency</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbank;let i=index ">
+                  <td style="text-align: center;">{{lookupbank.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td style="width: 30%;">{{ row.description }}</td>
+                  <td class="text-center" style="width: 20%;">{{ row.bank_account_no }}</td>
+                  <td style="width: 30%;">{{ row.bank_account_name }}</td>
+                  <td style="width: 20%;" class="text-center">{{ row.currency_code }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBank(row.code, row.description, row.bank_account_no, row.bank_account_name, row.currency_code, row.gl_link_code)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup bank-->
+
+<!--#region lookup cashier received request-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalReceivedRequest"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden; padding: 10px;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12" style="width: 100%">
+            <table id="datatableLookupReceivedRequest" class="table table-striped table-bordered hover" cellspacing="0"
+              width="100%">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Request No</th>
+                  <th>Remark</th>
+                  <th>Currency</th>
+                  <th>Amount</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupcashierreceivedrequest;let i=index ">
+                  <td style="text-align: center;">{{lookupcashierreceivedrequest.numberIndex+i+1}}
+                  </td>
+                  <td style="display: none;"></td>
+                  <td style="width: 20%;" class="text-center">{{row.code}}</td>
+                  <td style="width: 45%;">{{row.request_remarks}}</td>
+                  <td style="width: 15%;" class="text-center">{{row.request_currency_code}}</td>
+                  <td style="width: 20%;" class="if-no-edit-btn text-right">{{row.request_amount |
+                    number : '1.2-2'}}
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowCashiesrReceivedRequest(row.code, row.request_amount, row.pdc_no, row.pdc_code, row.branch_bank_code, row.branch_bank_name, row.request_currency_code)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup cashier received request-->
+
+<!-- (+) Ari 2023-09-08 ket : add view button for reversal-->
+<!--#region lookup Approval-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalApproval"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+
+            <table id="datatableLookupApproval" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Employee</th>
+                  <th>Position</th>
+                  <th>Level</th>
+                  <th>Result</th>
+                  <th>Remark</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupapproval;let i=index ">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupapproval.numberIndex+i+1}}</td>
+                  <td class="if-no-edit-btn" style="width: 30%;text-align: left;">
+                    {{row.emp_name}} {{row.is_mandatory_level}}</td>
+                  <td style="width: 20%;text-align: left;">{{row.emp_position_name}}</td>
+                  <td style="width: 5%;text-align: center;">{{row.approval_level}}</td>
+                  <td style="width: 15%;text-align: center;">
+                    {{row.result_status}}<br>
+                    {{row.result_date}}
+                  </td>
+                  <td style="width: 30%;">{{row.result_remarks}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Approval-->
+<!-- (+) Ari 2023-09-08-->
+
+<!-- Louis Kamis, 26 Juni 2025 10.50.54 -->
+<!--#region modal lookup ClientName-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalClientName"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupClientName" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Client No</th>
+                  <th>Client Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupclientname;let i=index ">
+                  <td class="if-no-edit-btn" style="display: none;"></td>
+                  <td class="if-no-edit-btn" style="text-align: center;">{{lookupclientname.numberIndex+i+1}}</td>
+                  <td style="width: 20%; text-align: center;">{{ row.client_no }}</td>
+                  <td style="width: 80%;">{{ row.client_name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowClientName(row.client_no, row.client_name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion modal lookup ClientName code-->
+<!-- Louis Kamis, 26 Juni 2025 10.50.54 -->

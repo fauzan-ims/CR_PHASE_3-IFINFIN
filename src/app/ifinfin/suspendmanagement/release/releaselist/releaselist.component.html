@@ -1,0 +1,147 @@
+<router-outlet></router-outlet>
+
+
+<div id="hideMainPanel" class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header">
+          <h5 class="card-title">Release List</h5>
+        </div>
+        <div class="card-body">
+
+          <!--#region button add-->
+          <div class="toolbar">
+            <button class="btn btn-info btn-round" (click)="btnAdd()" data-role="R00003350000000C">
+              Add
+            </button>
+          </div>
+          <!--#endregion button add-->
+
+          <!--#endregion row-->
+          <div class="row">
+            <!--#region lookup Branch Code -->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label labelmodule" label for="branch_code" (click)="btnClearBranch()"
+                style="cursor: pointer;" title="Clear">Branch</label>
+                <div class="col-md-12 buttons btn-lookup-margin">
+                  <span>
+                    <button class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                      (click)="btnLookupSysBranch()" data-toggle="modal" data-target="#lookupModalSysBranch" href="#"><i
+                        class="fa fa-search-plus"></i></button>
+                    {{branchName}}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!--#endregion lookup Branch code -->
+
+            <!--#region Status-->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Status</label>
+                <select class='form-control col-md-4' [ngModel]="this.tampStatus" (change)="PageStatus($event)">
+                  <option value='ALL'>ALL</option>
+                  <option value='HOLD'>HOLD</option>
+                  <option value='ON PROCESS'>ON PROCESS</option>
+                  <option value='APPROVE'>APPROVE</option>
+                  <option value='PAID'>PAID</option>
+                  <option value='REJECT'>REJECT</option>
+                  <option value='CANCEL'>CANCEL</option>
+                </select>
+              </div>
+            </div>
+            <!--#endregion Status-->
+          </div>
+          <!--#endregion row-->
+
+          <!--#region list view-->
+          <table id="datatableReleaseList" datatable [dtOptions]="dtOptions"
+            class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="disabled-sorting">No</th>
+                <th style="display: none;"></th>
+                <th>Release No </th>
+                <th>Branch </th>
+                <th>Suspend Code</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th style="text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of listrelease;let i=index ">
+                <td style="text-align: center;">{{listrelease.numberIndex+i+1}}</td>
+                <td style="display: none;"></td>
+                <td style="width: 15%;">{{row.code}} </td>
+                <td style="width: 20%;">{{row.branch_name}} </td>
+                <td style="width: 20%;">{{row.suspend_code}} </td>
+                <td style="width: 15%;text-align: center;">{{row.release_date}}</td>
+                <td style="width: 15%;text-align: right;">{{row.release_amount | number : '1.2-2'}}</td>
+                <td style="width: 15%;text-align: center;">{{row.release_status}} </td>
+                <td style="text-align: center;">
+                  <a class="btn btn-warning btn-link btn-icon btn-sm edit" title="Edit" (click)="btnEdit(row.code)"><i
+                      class="fa fa-edit"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--#endregion list view-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup sys branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSysBranch"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupSysBranch" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Nama</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupSysBranch;let i=index ">
+                  <td style="text-align: center;">{{lookupSysBranch.numberIndex+i+1}}</td> 
+                  <td style="display: none;"></td>
+                  <td style="width: 30%; text-align: center;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowSysBranch(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup sys branch-->

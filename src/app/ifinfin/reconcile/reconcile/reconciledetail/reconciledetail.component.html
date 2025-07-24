@@ -1,0 +1,500 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Reconcile Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #reversalmaindetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(reversalmaindetailForm.value, reversalmaindetailForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" [hidden]="isButton"
+              data-role="R00003400002341C">Save</button>
+            <button type="button" class="btn btn-success btn-round" hidden data-role="R00003400000341O"
+              (click)="btnPost()">Post</button>
+            <button type="button" class="btn btn-success btn-round" [hidden]="isButton || param == null"
+              data-role="R00003400007342O" (click)="btnProceed()">Proceed</button>
+            <button type="button" class="btn btn-warning btn-round" [hidden]="isButton || param == null"
+              data-role="R00003400000341R" (click)="btnCancel()">Cancel</button>
+            <button [hidden]="this.param == null || model.reconcile_status == 'CANCEL'" type="button"
+              style='float: right;' class="btn btn-success btn-round custom-button-width" (click)="btnViewApproval()"
+              data-toggle="modal" data-target="#lookupModalApproval" href="#">
+              View Approval
+            </button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Reconcile No</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Reconcile No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" name="p_code" [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupSysBranch()" data-toggle="modal"
+                        data-target="#lookupModalSysBranch" href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_code" name="p_branch_code">
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_name" name="p_branch_name"
+                        required #branch_name="ngModel">
+                    </span>
+                  </div>
+                  <small [hidden]="branch_name.valid || (branch_name.pristine && !reversalmaindetailForm.submitted)"
+                    class="text-danger">
+                    Branch is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region reconcile_status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.reconcile_status" name="p_reconcile_status"
+                    readonly>
+                </div>
+              </div>
+              <!--#endregion reconcile_status-->
+
+              <!--#region reconcile_date-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Date</label>
+                  <input class="form-control col-md-6" placeholder="dd/mm/yyyy" angular-mydatepicker
+                    [ngModel]="model.reconcile_date" name="p_reconcile_date" [options]="myDatePickerOptions"
+                    #p_reconcile_date="ngModel" #reconcile_date="angular-mydatepicker" autocomplete="off" readonly />
+                </div>
+              </div>
+              <!--#endregion reconcile_date-->
+
+              <!--#region  reconcile_from_value_date -->
+              <div class="col-md-4">
+                <div class="form-group"
+                  [class.has-error]="p_reconcile_from_value_date.invalid && p_reconcile_from_value_date.touched">
+                  <label for="reconcile_from_value_date" class="control-label">From Date *</label>
+                  <input [ngStyle]="getStyles(isButton)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.reconcile_from_value_date" name="p_reconcile_from_value_date"
+                    [options]="myDatePickerOptions" (click)="reconcile_from_value_date.toggleCalendar()" required
+                    #p_reconcile_from_value_date="ngModel" #reconcile_from_value_date="angular-mydatepicker"
+                    autocomplete="off" [readonly]="isButton" />
+                  <small *ngIf="p_reconcile_from_value_date.errors?.required && p_reconcile_from_value_date.touched"
+                    class="text-danger">
+                    From Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion reconcile_from_value_date -->
+
+              <!--#region  reconcile_to_value_date -->
+              <div class="col-md-4">
+                <div class="form-group"
+                  [class.has-error]="p_reconcile_to_value_date.invalid && p_reconcile_to_value_date.touched">
+                  <label for="reconcile_to_value_date" class="control-label">To Date *</label>
+                  <input [ngStyle]="getStyles(isButton)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.reconcile_to_value_date" name="p_reconcile_to_value_date"
+                    [options]="myDatePickerOptions" (click)="reconcile_to_value_date.toggleCalendar()" required
+                    #p_reconcile_to_value_date="ngModel" #reconcile_to_value_date="angular-mydatepicker"
+                    autocomplete="off" [readonly]="isButton" />
+                  <small *ngIf="p_reconcile_to_value_date.errors?.required && p_reconcile_to_value_date.touched"
+                    class="text-danger">
+                    To Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion reversal_date -->
+
+              <!--#region  Bank-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="bank_code" class="control-label">Bank *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupBank()" data-target="#lookupModalBank" data-toggle="modal"
+                        href="#">
+                        <i class="fa fa-search-plus"></i></button> {{model.branch_bank_name}}
+                      <input type="hidden" name="p_branch_bank_name" [ngModel]="model.branch_bank_name" required
+                        #branch_bank_name="ngModel" />
+                      <input type="hidden" name="p_branch_bank_code" [ngModel]="model.branch_bank_code" />
+                      <input type="hidden" class="form-control" [ngModel]="model.bank_gl_link_code"
+                        name="p_bank_gl_link_code">
+                    </span>
+                  </div>
+                  <small
+                    [hidden]="branch_bank_name.valid || (branch_bank_name.pristine && !reversalmaindetailForm.submitted)"
+                    class="text-danger">
+                    Bank is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion  Bank-->
+
+              <!--#region system_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>System Amount</label>
+                  <input readonly type="text" style="text-align: right;" class="form-control col-md-6"
+                    [ngModel]="model.system_amount | number : '1.2-2'" name="p_system_amount" amount="system_amount=">
+                </div>
+              </div>
+              <!--#endregion system_amount-->
+
+              <!--#region upload_amount-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Upload Amount</label>
+                  <input readonly type="text" style="text-align: right;" class="form-control col-md-6"
+                    [ngModel]="model.upload_amount | number : '1.2-2'" name="p_upload_amount" amount="upload_amount">
+                </div>
+              </div>
+              <!--#endregion upload_amount-->
+
+              <!--#region  Remarks-->
+              <div class="col-md-4">
+                <div class="form-group" [class.has-error]="reconcile_remarks.invalid && reconcile_remarks.touched">
+                  <label for="reconcile_remarks" class="control-label">Remark *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.reconcile_remarks"
+                    name="p_reconcile_remarks" required #reconcile_remarks="ngModel" [readonly]="isButton"></textarea>
+                  <small *ngIf="reconcile_remarks.errors?.required && reconcile_remarks.touched" class="text-danger">
+                    Remark is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion  Remarks-->
+
+              <!--#region file name-->
+              <div class="col-md-4" [hidden]="this.param == null || isButton">
+                <label class="control-label">Upload Bank Mutation</label>
+                <div class="form-group">
+                  <button type="button" class="btn btn-info btn-round custom-button-width" (click)="btnDownload()"
+                    data-role="R00003400000341P">
+                    Download Template
+                  </button>
+                  <div class="fileinput fileinput-new text-center" data-role="R00003400003341C"
+                    data-provides="fileinput">
+                    <div [hidden]="this.tampHidden == true">
+                      <span class="btn btn-info btn-round btn-file ">
+                        <input type="file" (change)="onUpload($event)" id='fileControl' />
+                        <span>Upload
+                        </span>
+                      </span>
+                      {{tempFile}}
+                    </div>
+                    <!-- <div [hidden]="this.tampHidden == false">
+                      <span>
+                        <a class="btn btn-danger btn-round btn-file" type="button" (click)="deleteImage(model.paths)">
+                          <span><i class="fa fa-trash"></i></span></a>
+                        <a class="btn btn-primary btn-round btn-file " type="button"
+                          (click)="priviewFile(model.file_name, model.paths)">
+                          <span><i class="fa fa-eye"></i></span></a>
+                      </span>
+                      <div> {{model.file_name}}</div>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <!--#endregion file name-->
+
+              <!--#region  upload-->
+              <!-- <span class="btn btn-info btn-round btn-file custom-button-width">
+                <input type="file" accept=".pdf, .xls, .xlsx" (change)="onUploadReader($event)" />
+                <span>Upload</span>
+              </span>
+              {{tempFile}} -->
+              <!--#endregion  upload-->
+            </div>
+            <!--#endregion  row-->
+          </form>
+          <!--#endregion form-->
+          <div *ngIf="param != null">
+            <span layout="row horizontal-divider">
+              <hr flex />
+            </span>
+            <div class="row">
+              <!--#region reconcile transaction is_system 1-->
+              <div class="col-md-6">
+
+                <div class="card-body">
+                  <!--#region button add-->
+                  <div class="toolbar" [hidden]="isButton">
+                    <button class="btn btn-info btn-round" (click)="btnSaveList('1')" data-role="R00003400004341C">
+                      Save
+                    </button>
+                    <button type="button" class="btn btn-info btn-round" (click)="btnRefresh()"
+                      data-role="R00003400005341C">Refresh</button>
+                    <button type="button" class="btn btn-success btn-round" [hidden]="isButton || param == null"
+                      data-role="R00003400006341C" (click)="btnRecount()">Recount</button>
+                  </div>
+                  <!--#endregion button add-->
+
+                  <!--#region list view-->
+                  <table id="datatablesystem" datatable [dtOptions]="dtOptions"
+                    class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                    <thead>
+                      <tr>
+                        <th style="display: none;"></th>
+                        <th>Reconcile</th>
+                        <th hidden>Id</th>
+                        <th>Value Date</th>
+                        <th>Source</th>
+                        <th>Remark</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of listreconciledetail">
+                        <td style="display: none;"></td>
+                        <td class="disabled-sorting">
+                          <div class="form-check" style="text-align: center;">
+                            <label class="form-check-label">
+                              <input type="hidden" value="{{row.id}}" name="p_id1">
+                              <input class="form-check-input" type="checkbox" [checked]="row.is_reconcile"
+                                name="p_is_reconcile1" [disabled]="isButton">
+                              <span class="form-check-sign"></span>
+                            </label>
+                          </div>
+                        </td>
+                        <td style="text-align: center;" hidden>{{row.id}} </td>
+                        <td style="text-align: center;width: 20;">{{row.transaction_value_date}} </td>
+                        <td style="width: 20%;">{{row.transaction_source}} </td>
+                        <td style="width: 40%;" class="if-no-edit-btn">{{row.remark}} <br>
+                          {{row.transaction_reff_no}}</td>
+                        <td style="text-align: right;width: 20%;">{{row.transaction_amount | number : '1.2-2'}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!--#endregion list view-->
+                </div>
+
+              </div>
+              <!--#endregion reconcile transaction is_system 1-->
+
+              <!--#region reconcile transaction is_system 0-->
+              <div class="col-md-6">
+
+                <div class="card-body">
+                  <!--#region button add-->
+                  <div class="toolbar" [hidden]="isButton">
+                    <button class="btn btn-info btn-round" (click)="btnSaveList('2')" data-role="R00003400007341C">
+                      Save
+                    </button>
+                  </div>
+                  <!--#endregion button add-->
+
+                  <!--#region list view-->
+                  <table id="datatableupload" datatable [dtOptions]="dtOptionss"
+                    class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                    <thead>
+                      <tr>
+                        <th style="display: none;"></th>
+                        <th>Reconcile</th>
+                        <th style="width: 30%;">Value Date</th>
+                        <th style="width: 40%;">Remark</th>
+                        <th style="width: 20%;">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of listreconciledetails">
+                        <td style="display: none;"></td>
+                        <td class="disabled-sorting">
+                          <div class="form-check" style="text-align: center;">
+                            <label class="form-check-label">
+                              <input type="hidden" value="{{row.id}}" name="p_id2">
+                              <input class="form-check-input" type="checkbox" [checked]="row.is_reconcile"
+                                name="p_is_reconcile2" [disabled]="isButton">
+                              <span class="form-check-sign"></span>
+                            </label>
+                          </div>
+                        </td>
+                        <td style="text-align: center;width: 20%;">{{row.transaction_value_date}} </td>
+                        <td class="if-no-edit-btn" style="text-align: left;width: 60%;">{{row.remark}}</td>
+                        <td style="text-align: right;width: 20%;">{{row.transaction_amount | number : '1.2-2'}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!--#endregion list view-->
+                </div>
+
+              </div>
+            </div>
+            <!--#endregion reconcile transaction is_system 0-->
+          </div>
+        </div>
+        <!-- <div class="card-footer "> -->
+        <!-- </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup sys branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalSysBranch"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupSysBranch" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Nama</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbranch;let i=index">
+                  <td style="text-align: center;">{{lookupbranch.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td style="width: 30%; text-align: center;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowSysBranch(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup sys branch-->
+
+<!--#region lookup bank-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalBank" style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupBank" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th hidden></th>
+                  <th>Name</th>
+                  <th>Account No</th>
+                  <th>Account Name</th>
+                  <th>Currency</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbank;let i=index">
+                  <td style="text-align: center;">{{lookupbank.numberIndex+i+1}}</td>
+                  <th style="display: none;"></th>
+                  <td hidden></td>
+                  <td style="width: 30%;">{{ row.description }}</td>
+                  <td class="text-center" style="width: 20%;">{{ row.bank_account_no }}</td>
+                  <td style="width: 30%;">{{ row.bank_account_name }}</td>
+                  <td style="width: 20%;" class="text-center">{{ row.currency_code }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBank(row.code, row.description, row.gl_link_code)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup bank-->
+
+<!--#region lookup Approval-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalApproval"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+
+            <table id="datatableLookupApproval" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Employee</th>
+                  <th>Position</th>
+                  <th>Level</th>
+                  <th>Result</th>
+                  <th>Remark</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupapproval;let i=index ">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupapproval.numberIndex+i+1}}</td>
+                  <td class="if-no-edit-btn" style="width: 30%;text-align: left;">
+                    {{row.emp_name}} {{row.is_mandatory_level}}</td>
+                  <td style="width: 20%;text-align: left;">{{row.emp_position_name}}</td>
+                  <td style="width: 5%;text-align: center;">{{row.approval_level}}</td>
+                  <td style="width: 15%;text-align: center;">
+                    {{row.result_status}}<br>
+                    {{row.result_date}}
+                  </td>
+                  <td style="width: 30%;">{{row.result_remarks}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Approval-->

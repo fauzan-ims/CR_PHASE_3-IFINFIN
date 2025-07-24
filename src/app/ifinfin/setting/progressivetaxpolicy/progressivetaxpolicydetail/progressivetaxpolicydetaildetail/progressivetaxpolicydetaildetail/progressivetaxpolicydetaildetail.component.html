@@ -1,0 +1,137 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Progressive Tax Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #progressivetaxpolicydetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(progressivetaxpolicydetailForm.value, progressivetaxpolicydetailForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00002990004300C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region id-->
+              <input hidden type="text" [ngModel]="this.params" name="p_id">
+              <!--#endregion id-->
+
+              <!--#region Notary Code-->
+              <input type="text" [ngModel]="this.param" maxlength="50" name="p_tax_code" hidden>
+              <!--#endregion Notary Code-->
+
+              <!--#region effective date-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="effective_date" class="control-label">Effective Date *</label>
+                  <input [ngStyle]="getStyles(isReadOnly)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.effective_date" name="p_effective_date"
+                    [options]="myDatePickerOptions" (click)="effective_date.toggleCalendar()" required
+                    #p_effective_date="ngModel" #effective_date="angular-mydatepicker" autocomplete="off"
+                    [readonly]="isReadOnly" />
+                  <small *ngIf="(p_effective_date.errors?.required && p_effective_date.touched) || (p_effective_date.errors?.required && progressivetaxpolicydetailForm.submitted)" class="text-danger">
+                    Effective Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion effective date-->
+
+              <!--#region from value amount-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="from_value_amount" class="control-label">From Value Amount *</label>
+                  <input type="text" style="text-align:right" class="form-control col-md-8"
+                    [ngModel]="model.from_value_amount | number : '1.2-2'" name="p_from_value_amount" required
+                    #from_value_amount="ngModel" maxlength="24" amount="from_value_amount">
+                  <small *ngIf="(from_value_amount.errors?.required && from_value_amount.touched) || (from_value_amount.errors?.required && progressivetaxpolicydetailForm.submitted)" class="text-danger">
+                    From Value Amount is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion from value amount-->
+
+              <!--#region to value amount-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="to_value_amount" class="control-label">To Value Amount *</label>
+                  <input type="text" style="text-align:right" class="form-control col-md-8"
+                    [ngModel]="model.to_value_amount | number : '1.2-2'" name="p_to_value_amount" required
+                    #to_value_amount="ngModel" maxlength="24" amount="to_value_amount">
+                  <small *ngIf="(to_value_amount.errors?.required && to_value_amount.touched) || (to_value_amount.errors?.required && progressivetaxpolicydetailForm.submitted)" class="text-danger">
+                    To Value Amount is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion to value amount-->
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region with tax number pct-->
+              <div class="col-md-4">
+                <div class="form-group" >
+                  <label for="with_tax_number_pct" class="control-label">With Tax Number (%) *</label>
+                  <input type="text" style="text-align:right" class="form-control col-md-8"
+                    [ngModel]="model.with_tax_number_pct | number : '1.6-6'" name="p_with_tax_number_pct" required
+                    #with_tax_number_pct="ngModel" maxlength="10" rate="with_tax_number_pct">
+
+                  <small *ngIf="(with_tax_number_pct.errors?.required && with_tax_number_pct.touched) || (with_tax_number_pct.errors?.required && progressivetaxpolicydetailForm.submitted)"
+                    class="text-danger">
+                    With Tax Number (%) is required
+                  </small>
+                  <small *ngIf="with_tax_number_pct.errors?.pattern && with_tax_number_pct.touched" class="text-danger">
+                    With Tax Number (%) is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion with tax number pct-->
+
+              <!--#region without tax number pct-->
+              <div class="col-md-4">
+                <div class="form-group"
+                  [class.has-error]="without_tax_number_pct.invalid && without_tax_number_pct.touched">
+                  <label for="without_tax_number_pct" class="control-label">Without Tax Number (%) *</label>
+                  <input type="text" style="text-align:right" class="form-control col-md-8"
+                    [ngModel]="model.without_tax_number_pct | number : '1.6-6'" name="p_without_tax_number_pct" required
+                    #without_tax_number_pct="ngModel" maxlength="10" rate="without_tax_number_pct">
+
+                  <small *ngIf="(without_tax_number_pct.errors?.required && without_tax_number_pct.touched) || (without_tax_number_pct.errors?.required && progressivetaxpolicydetailForm.submitted)"
+                    class="text-danger">
+                    Without Tax Number (%) is required
+                  </small>
+                  <small *ngIf="without_tax_number_pct.errors?.pattern && without_tax_number_pct.touched"
+                    class="text-danger">
+                    Without Tax Number (%) is required and format should be <i>0-9</i>
+                  </small>
+                </div>
+              </div>
+              <!--#endregion without tax number pct-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

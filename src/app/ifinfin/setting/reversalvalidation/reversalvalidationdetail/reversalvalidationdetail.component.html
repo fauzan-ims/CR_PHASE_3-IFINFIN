@@ -1,0 +1,154 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Reversal Validation Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #reversalvalidationForm="ngForm"
+            (ngSubmit)="onFormSubmit(reversalvalidationForm.value, reversalvalidationForm.valid)">
+
+            <!--#region button submit back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00016600021661C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region id-->
+              <input type="text" class="form-control" [ngModel]="model.id" name="p_id" hidden>
+              <!--#endregion id-->
+
+              <!--#region name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="name" class="control-label">Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.name" maxlength="250" name="p_name" required
+                    #name="ngModel">
+                  <small
+                    *ngIf="(name.errors?.required && name.touched) || (name.errors?.required && reversalvalidationForm.submitted)"
+                    class="text-danger">
+                    Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion name-->
+
+              <!--#region module-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Module *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button class="btn btn-icon btn-outline-default btn-round btn-md" type="button"
+                        (click)="btnLookupModule()" data-target="#lookupModalModule" data-toggle="modal" href="#">
+                        <i class="fa fa-search-plus"></i></button>{{model.module_code}}
+                      <input type="hidden" name="p_module_code" [ngModel]="model.module_code" required
+                        #module_code="ngModel" />
+                    </span>
+                  </div>
+                  <small [hidden]="module_code.valid || (module_code.pristine && !reversalvalidationForm.submitted)"
+                    class="text-danger">
+                    Module is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion module-->
+
+              <!--#region process_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="process_name" class="control-label">Process Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.process_name" maxlength="250"
+                    name="p_process_name" required #process_name="ngModel">
+                  <small
+                    *ngIf="(process_name.errors?.required && process_name.touched) || (process_name.errors?.required && reversalvalidationForm.submitted)"
+                    class="text-danger">
+                    Process Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion process_name-->
+
+              <!--#region api_validation-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="api_validation" class="control-label">API Validation *</label>
+                  <input type="text" class="form-control" [ngModel]="model.api_validation" maxlength="250"
+                    name="p_api_validation" required #api_validation="ngModel">
+                  <small
+                    *ngIf="(api_validation.errors?.required && api_validation.touched) || (api_validation.errors?.required && reversalvalidationForm.submitted)"
+                    class="text-danger">
+                    Process Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion api_validation-->
+            </div>
+            <!--#endregion row-->
+          </form>
+          <!--#endregion form-->
+        </div>
+        <div class="card-footer  ">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup module -->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalModule"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12" style="width: 100%">
+            <table id="datatableModule" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th style="display: none;"></th>
+                  <th class="disabled-sorting">No</th>
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th style="text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupmodule;  let i=index">
+                  <td style="display: none;"></td>
+                  <td style="text-align: center;">{{lookupmodule.numberIndex+i+1}}</td>
+                  <td style="text-align: center;width: 20%;">{{ row.code }}</td>
+                  <td style="text-align: left;width: 80%;">{{ row.module_name }}</td>
+                  <td class="text-right">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowModule(row.code, row.module_name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup module -->

@@ -1,0 +1,354 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h5 class="card-title">Void Info</h5>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #receiptvoiddetailForm="ngForm"
+            (ngSubmit)="onFormSubmit(receiptvoiddetailForm.value, receiptvoiddetailForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" [hidden]="isButton"
+              data-role="R00003060002307C">Save</button>
+            <button type="button" class="btn btn-success btn-round" [hidden]="isButton || param == null"
+              (click)="btnPost()" data-role="R00003060000307O">Post</button>
+            <button type="button" class="btn btn-warning btn-round" [hidden]="isButton || param == null"
+              (click)="btnCancel()" data-role="R00003060000307R">Cancel</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code-->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Void No</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Void No </label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly">
+                </div>
+              </div>
+              <!--#endregion code-->
+
+              <!--#region Branch Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label labelmodule">Branch *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isReadOnly" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupSysBranch()" data-toggle="modal"
+                        data-target="#lookupModalBranch" href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.branch_name}}
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_code" name="p_branch_code">
+                      <input type="hidden" class="form-control" [ngModel]="model.branch_name" name="p_branch_name"
+                        required #branch_name="ngModel">
+                    </span>
+                  </div>
+                  <small [hidden]="branch_name.valid || (branch_name.pristine && !receiptvoiddetailForm.submitted)"
+                    class="text-danger">
+                    Branch is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Branch Code-->
+
+              <!--#region  Status-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <input type="text" class="form-control" [ngModel]="model.void_status" maxlength="10"
+                    name="p_void_status" readonly>
+                </div>
+              </div>
+              <!--#endregion  Status-->
+            </div>
+            <!--#endregion  row-->
+
+            <!--#region  row-->
+            <div class="row">
+              <!--#region  Date -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="void_date" class="control-label">Date *</label>
+                  <input [ngStyle]="getStyles(isButton)" class="form-control col-md-6" placeholder="dd/mm/yyyy"
+                    angular-mydatepicker [ngModel]="model.void_date" name="p_void_date" [options]="myDatePickerOptions"
+                    (click)="void_date.toggleCalendar()" required #p_void_date="ngModel"
+                    #void_date="angular-mydatepicker" autocomplete="off" [readonly]="isButton" />
+                  <small
+                    *ngIf="(p_void_date.errors?.required && p_void_date.touched) || (p_void_date.errors?.required && receiptvoiddetailForm.submitted)"
+                    class="text-danger">
+                    Date is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion Date -->
+
+              <!--#region reason Code-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Reason *</label>
+                  <div class="col-md-12 buttons btn-lookup-margin">
+                    <span>
+                      <button [disabled]="isButton" class="btn btn-icon btn-outline-default btn-round btn-md"
+                        type="button" (click)="btnLookupReason()" data-toggle="modal" data-target="#lookupModalReason"
+                        href="#"><i class="fa fa-search-plus"></i></button>
+                      {{model.void_reason_desc}}
+                      <input type="hidden" class="form-control" [ngModel]="model.void_reason_code"
+                        name="p_void_reason_code" required #void_reason_code="ngModel">
+                    </span>
+                  </div>
+                  <small
+                    [hidden]="void_reason_code.valid || (void_reason_code.pristine && !receiptvoiddetailForm.submitted)"
+                    class="text-danger">
+                    Reason is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion reason Code-->
+
+              <!--#region  Remarks-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="void_remarks" class="control-label">Remark *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.void_remarks" maxlength="4000"
+                    name="p_void_remarks" required #void_remarks="ngModel" [readonly]="isButton"></textarea>
+                  <small
+                    *ngIf="(void_remarks.errors?.required && void_remarks.touched) || (void_remarks.errors?.required && receiptvoiddetailForm.submitted)"
+                    class="text-danger">
+                    Remarks is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion  Remarks-->
+            </div>
+            <!--#endregion  row-->
+          </form>
+          <!--#endregion readonly-->
+        </div>
+
+        <!--#region list view-->
+        <div *ngIf="param != null" class="row">
+          <div class="col-md-12">
+            <div class="card-header">
+              <h5 class="card-title">Receipt List </h5>
+            </div>
+            <div class="card-body">
+
+              <!--#region button add, delete-->
+              <div class="toolbar" [hidden]="model.void_status !== 'HOLD'">
+                <button class="btn btn-info btn-round" type="button" (click)="btnLookupReceiptMain()"
+                  data-target="#lookupModalReceiptMain" data-toggle="modal" href="#" data-role="R00003060003307C">
+                  Add</button>
+
+                <button class="btn btn-danger btn-round" (click)="btnDeleteAll()" data-role="R00003060000307D"
+                  id="button">
+                  Delete
+                </button>
+              </div>
+              <!--#endregion button add, delete-->
+
+              <!--#region list view-->
+              <table id="datatablesReceiptVoidDetail" datatable [dtOptions]="dtOptions"
+                class="table table-striped table-bordered row-border hover" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th class="disabled-sorting">No</th>
+                    <th class="disabled-sorting">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" id="checkalltable"
+                            [(ngModel)]="selectedAllTable" (change)="selectAllTable();" />
+                          <span class="form-check-sign"></span>
+                        </label>
+                      </div>
+                    </th>
+                    <th>Receipt No</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of listreceiptvoiddetaildetail;let i=index ">
+                    <td style="text-align: center;">{{listreceiptvoiddetaildetail.numberIndex+i+1}}</td>
+                    <td class="disabled-sorting">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" [(ngModel)]="row.selectedTable"
+                            (change)="checkIfAllTableSelected($event, row.id);">
+                          <span class="form-check-sign"></span>
+                        </label>
+                      </div>
+                    </td>
+                    <td class="if-no-edit-btn" style="width: 100%;text-align: left;">{{row.receipt_no}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--#endregion list view-->
+            </div>
+            <div class="card-footer ">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--#region lookup Branch-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalBranch"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupBranch" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupbranch;let i=index ">
+                  <td style="text-align: center;">{{lookupbranch.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td class="text-center" style="width: 30%;">{{ row.code }}</td>
+                  <td style="width: 70%;">{{ row.name }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowBranch(row.code, row.name)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Branch-->
+
+<!--#region lookup reason-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalReason"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <div class="card-body col-md-12">
+            <table id="datatableLookupReason" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th style="display: none;"></th>
+                  <th>Description</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupreason;let i=index ">
+                  <td style="text-align: center;">{{lookupreason.numberIndex+i+1}}</td>
+                  <td style="display: none;"></td>
+                  <td style="width: 100%;">{{ row.general_subcode_desc }}</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-default btn-round"
+                      (click)="btnSelectRowReason(row.code, row.general_subcode_desc)">Select</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup Branch-->
+
+<!--#region lookup receipt main-->
+<div class="modal bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="lookupModalReceiptMain"
+  style="margin-top: -65px">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow:hidden;">
+        <div class="col-md-12">
+          <!--#region button add-->
+          <button class="btn btn-info btn-round" (click)="btnSelectAllLookup()" role="P001" id="button">
+            Add
+          </button>
+          <!--#endregion button add--->
+          <div class="card-body col-md-12" style="width: 100%">
+            <table id="datatableLookupReceiptMain" class="table table-striped table-bordered hover" cellspacing="0"
+              style="min-width: 100%;">
+              <thead>
+                <tr>
+                  <th class="disabled-sorting">No</th>
+                  <th class="disabled-sorting checkbox-fix-padding">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="checkallLookup"
+                          [(ngModel)]="selectedAllLookup" (change)="selectAllLookup();" />
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </th>
+                  <th>Receipt No</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of lookupreceiptmain;let i=index ">
+                  <td style="text-align: center;">{{lookupreceiptmain.numberIndex+i+1}}</td>
+                  <td class="disabled-sorting checkbox-fix-padding">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="row.selectedLookup"
+                          (change)="checkIfAllLookup($event, row.code);">
+                        <span class="form-check-sign"></span>
+                      </label>
+                    </div>
+                  </td>
+                  <td class="if-no-edit-btn" style="width: 100%;">{{ row.receipt_no }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#endregion lookup role-->

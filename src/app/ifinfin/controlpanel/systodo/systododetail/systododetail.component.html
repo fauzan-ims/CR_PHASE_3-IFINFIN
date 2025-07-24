@@ -1,0 +1,120 @@
+<div class="main-content">
+  <!-- spinner region -->
+  <div class="panel-container-spinner" *ngIf="showSpinner">
+    <app-spinner class="spinner-container"></app-spinner>
+  </div>
+  <!-- end spinner region -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <!--#region watermark-->
+        <div class="watermark" hidden>
+          <h6>{{this.companyName}}</h6>
+          <h6>{{this.userName}}</h6>
+          <h6>{{this.sysDate | date}} {{this.currentTime}}</h6>
+        </div>
+        <!--#endregion watermark-->
+        <div class="card-header ">
+          <h4 class="card-title">Todo Info</h4>
+        </div>
+        <div class="card-body ">
+          <!--#region form-->
+          <form #systodoForm="ngForm" (ngSubmit)="onFormSubmit(systodoForm.value, systodoForm.valid)">
+
+            <!--#region button submit dan back-->
+            <button type="submit" class="btn btn-info btn-round" data-role="R00019540001955C">Save</button>
+            <button type="button" class="btn btn-danger btn-round" (click)="btnBack()">Back</button>
+            <!--#endregion button submit dan back-->
+
+            <!--#region row-->
+            <div class="row">
+              <!--#region code -->
+              <div class="col-md-4">
+                <div [hidden]="model.code != null" class="row" style="margin-bottom: -15px; padding-top: 30px;">
+                  <h1 class="col-md-4" style="font-size: 12px;">Code</h1>
+                  <h1 class="col-md-8" style="font-size: 12px;">-Auto
+                    Generate-</h1>
+                </div>
+                <div [hidden]="model.code == null" class="form-group">
+                  <label>Code</label>
+                  <input type="text" class="form-control" [ngModel]="model.code" maxlength="50" name="p_code"
+                    [readonly]="isReadOnly" style="width: 50%;">
+                </div>
+              </div>
+
+
+              <!--#endregion code -->
+
+              <!--#region todo_name-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="todo_name" class="control-label">Name *</label>
+                  <textarea type="text" class="form-control" [ngModel]="model.todo_name" name="p_todo_name" required
+                    #todo_name="ngModel"></textarea>
+                  <small
+                    *ngIf="todo_name.errors?.required && todo_name.touched || (todo_name.errors?.required && systodoForm.submitted) "
+                    class="text-danger">
+                    Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion todo_name-->
+
+              <!--#region link_address-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="link_address" class="control-label">Link Address *</label>
+                  <input type="text" class="form-control" [ngModel]="model.link_address" name="p_link_address" required
+                    #link_address="ngModel">
+                  <small
+                    *ngIf="link_address.errors?.required && link_address.touched || (link_address.errors?.required && systodoForm.submitted) "
+                    class="text-danger">
+                    Link Address is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion link_address-->
+
+            </div>
+            <!--#endregion row-->
+
+            <!--#region row-->
+            <div class="row">
+
+              <!--#region query-->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="query" class="control-label">Procedure Name *</label>
+                  <input type="text" class="form-control" [ngModel]="model.query" name="p_query" required
+                    #query="ngModel">
+                  <small
+                    *ngIf="query.errors?.required && query.touched || (query.errors?.required && systodoForm.submitted) "
+                    class="text-danger">
+                    Procedure Name is required
+                  </small>
+                </div>
+              </div>
+              <!--#endregion query-->
+
+              <!--#region check box is active-->
+              <div class="col-md-4">
+                <div class="form-check mt-3" style="margin-left: -35px;">
+                  <label></label>
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" [ngModel]="model.is_active" name="p_is_active">
+                      Active
+                      <span class="form-check-sign"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!--#endregion check box is active-->
+            </div>
+          </form>
+          <!--#endregion row-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
