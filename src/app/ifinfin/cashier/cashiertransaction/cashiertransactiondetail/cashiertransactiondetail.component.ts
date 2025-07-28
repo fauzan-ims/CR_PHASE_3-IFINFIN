@@ -2499,6 +2499,23 @@ export class CashiertransactiondetailComponent extends BaseComponent implements 
     this.model.currency_code = undefined;
     $('#lookupModalClientName').modal('hide');
   }
+
+  resetClientAndAgreement() {
+    this.model.client_no = undefined;
+    this.model.client_name = undefined;
+    this.model.agreement_no = undefined;
+    this.model.agreement_external_no = undefined;
+    this.model.currency_code = undefined;
+    this.model.received_request_code = undefined;
+    this.model.pdc_code = undefined;
+    this.model.pdc_no = undefined;
+  }
+
+  resetAgreement() {
+    this.model.agreement_no = undefined;
+    this.model.agreement_external_no = undefined;
+    this.model.currency_code = undefined;
+  }
   //#endregion ClientName
 }
 

@@ -180,7 +180,8 @@
               </div> -->
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="labelmodule" (click)="resteClientName()" style="cursor: pointer;" title="CLEAR">Client
+                  <!-- <label class="labelmodule" (click)="resteClientName()" style="cursor: pointer;" title="CLEAR">Client -->
+                  <label class="labelmodule" style="cursor: pointer;" title="CLEAR">Client
                     Name</label>
                   <div class="col-md-12">
                     <span>
@@ -194,6 +195,9 @@
                       <input type="hidden" class="form-control" [ngModel]="model.client_name" name="p_client_name"
                         #client_name="ngModel">
                     </span>
+                    <button type="button" class="btn btn-danger btn-sm" [hidden]="model.code != null"
+                      (click)="resetClientAndAgreement()">Reset</button>
+
                   </div>
                 </div>
               </div>
@@ -219,6 +223,7 @@
                           <input type="hidden" class="form-control" [ngModel]="model.agreement_no" name="p_agreement_no"
                             #agreement_no="ngModel">
                         </span>
+                        <button type="button" class="btn btn-danger btn-sm" [hidden]="model.code != null" (click)="resetAgreement()">Reset</button>
                       </div>
                       <small
                         [hidden]="agreement_no.valid || (agreement_no.pristine && !cashiertransactiondetailForm.submitted)"
