@@ -181,7 +181,10 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <!-- <label class="labelmodule" (click)="resteClientName()" style="cursor: pointer;" title="CLEAR">Client -->
-                  <label class="labelmodule" style="cursor: pointer;" title="CLEAR">Client
+                  <label class="labelmodule" style="cursor: pointer;" title="CLEAR" [hidden]="model.code != null"
+                    (click)="resetClientAndAgreement()">Client
+                    Name</label>
+                  <label class="labelmodule" style="cursor: pointer;" [hidden]="model.code == null">Client
                     Name</label>
                   <div class="col-md-12">
                     <span>
@@ -195,8 +198,8 @@
                       <input type="hidden" class="form-control" [ngModel]="model.client_name" name="p_client_name"
                         #client_name="ngModel">
                     </span>
-                    <button type="button" class="btn btn-danger btn-sm" [hidden]="model.code != null"
-                      (click)="resetClientAndAgreement()">Reset</button>
+                    <!-- <button type="button" class="btn btn-danger btn-sm" [hidden]="model.code != null"
+                      (click)="resetClientAndAgreement()">Reset</button> -->
 
                   </div>
                 </div>
@@ -209,8 +212,10 @@
                 <div class="row">
                   <div class="col-md-9">
                     <div class="form-group">
-                      <label class="control-label" (click)="btnClearAgreement()" style="cursor: pointer;" title="Clear"
-                        [hidden]="isAgreement || model.cashier_status != 'HOLD'">Agreement No </label>
+                      <!-- <label class="control-label" (click)="btnClearAgreement()" style="cursor: pointer;" title="Clear"
+                        [hidden]="isAgreement || model.cashier_status != 'HOLD'">Agreement No </label> -->
+                      <label class="control-label" style="cursor: pointer;" title="Clear" [hidden]="model.code != null"
+                        (click)="resetAgreement()">Agreement No </label>
                       <label [hidden]="model.cashier_status != 'PAID'">Agreement No </label>
                       <label class="control-label" [hidden]="!isAgreement">Agreement No *</label>
                       <div class="col-md-12 buttons btn-lookup-margin">
@@ -223,7 +228,8 @@
                           <input type="hidden" class="form-control" [ngModel]="model.agreement_no" name="p_agreement_no"
                             #agreement_no="ngModel">
                         </span>
-                        <button type="button" class="btn btn-danger btn-sm" [hidden]="model.code != null" (click)="resetAgreement()">Reset</button>
+                        <!-- <button type="button" class="btn btn-danger btn-sm" [hidden]="model.code != null"
+                          (click)="resetAgreement()">Reset</button> -->
                       </div>
                       <small
                         [hidden]="agreement_no.valid || (agreement_no.pristine && !cashiertransactiondetailForm.submitted)"

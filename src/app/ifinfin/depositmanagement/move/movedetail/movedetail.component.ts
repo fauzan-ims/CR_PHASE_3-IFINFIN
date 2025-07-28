@@ -264,6 +264,7 @@ export class MovedetailComponent extends BaseComponent implements OnInit {
             if (parse.result === 1) {
               this.showNotification('bottom', 'right', 'success');
               this.callGetrow();
+              $('#datatableMoveDetail').DataTable().ajax.reload();
             } else {
               this.swalPopUpMsg(parse.data);
             }
@@ -283,6 +284,7 @@ export class MovedetailComponent extends BaseComponent implements OnInit {
             if (parse.result === 1) {
               this.showNotification('bottom', 'right', 'success');
               this.route.navigate(['/depositmanagement/submovelist/movedetail', parse.code]);
+              $('#datatableMoveDetail').DataTable().ajax.reload();
             } else {
               this.swalPopUpMsg(parse.data);
             }
@@ -292,6 +294,7 @@ export class MovedetailComponent extends BaseComponent implements OnInit {
             const parse = JSON.parse(error);
             this.swalPopUpMsg(parse.data);
           });
+
     }
   }
   //#endregion  form submit
