@@ -216,6 +216,7 @@
                         [hidden]="isAgreement || model.cashier_status != 'HOLD'">Agreement No </label> -->
                       <label class="control-label" style="cursor: pointer;" title="Clear" [hidden]="model.code != null"
                         (click)="resetAgreement()">Agreement No </label>
+                      <label class="control-label" style="cursor: pointer;" [hidden]="model.code == null">Agreement No </label>
                       <label [hidden]="model.cashier_status != 'PAID'">Agreement No </label>
                       <label class="control-label" [hidden]="!isAgreement">Agreement No *</label>
                       <div class="col-md-12 buttons btn-lookup-margin">
